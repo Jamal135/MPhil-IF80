@@ -4,8 +4,9 @@ import dask.dataframe as dd
 df = dd.read_csv("free_company_dataset.csv", error_bad_lines=False)
 
 # Define which country and size you care about
-country_list = ['australia', 'new_zealand', 'united states', 'canada', 'united kingdom']
+# country_list = ['australia', 'new_zealand', 'united states', 'canada', 'united kingdom']
+country_list = ['australia', 'new_zealand']
 size_list = ['5001-10000', '10001+']
 
 df_selected = df[(df['country'].isin(country_list)) & (df['size'].isin(size_list))]
-df_selected.compute().to_csv('refined_list.csv')
+df_selected.compute().to_csv('AUS_NZ_refined_list.csv')

@@ -114,3 +114,5 @@ dmypy.json
 .pyre/
 
 *.csv
+
+*.google-cookie
