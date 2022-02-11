@@ -14,8 +14,8 @@ seeks_reviews = "https://www.seek.com.au/companies/seek-432600/reviews"
 
 def gen_query(organisation: str):
     ''' Returns: Generated search queries for given name. '''
-    indeed = organisation + " Indeed employee reviews"
-    seek = organisation + " Seek employee reviews"
+    indeed = f'{organisation} Indeed employee reviews'
+    seek = f'{organisation} Seek employee reviews'
     return [indeed, seek]
 
 
@@ -23,9 +23,7 @@ def google_search(queries: list, stop_point: int = 5):
     ''' Returns: Resulting Google search findings. '''
     results = []
     for query in queries:
-        urls = []
-        for url in search(query, stop=stop_point):
-            urls.append(url)
+        urls = list(search(query, stop=stop_point))
         results.append(urls)
     return results
 
@@ -52,16 +50,12 @@ def validate_search(results: list, name: str, score_threshold: int = 0):
     return valid_result
 
 
-def grab_HTML(website, seek_url, start):
+def grab_HTML(url, start):
     ''' Returns: Selected webpage soup. '''
     for _ in range(15):
         try:
-            if website == "Indeed":
-                req = lib.Request(seek_url+'?start='+str(start),
-                                  headers={'User-Agent': 'Mozilla/5.0'})
-            else:
-                req = lib.Request(seek_url+'?page='+str(start),
-                                  headers={'User-Agent': 'Mozilla/5.0'})
+            req = lib.Request(f'{url}?start=' + str(start),
+                              headers={'User-Agent': 'Mozilla/5.0'})
             webpage = lib.urlopen(req)
             return BeautifulSoup(webpage, 'html.parser')
         except:
@@ -92,16 +86,16 @@ def review_volume(soup, website: str):
 def scrape_count(links: list):
     ''' Returns: Number of reviews at link. '''
     indeed_url = links[0]
-    if indeed_url == None:
+    if indeed_url is None:
         indeed_count = 0
     else:
-        indeed_soup = grab_HTML("Indeed", indeed_url, 0)
+        indeed_soup = grab_HTML(indeed_url, 0)
         indeed_count = review_volume(indeed_soup, "Indeed")
     seek_url = links[1]
-    if seek_url == None or seek_url == seeks_reviews:
+    if seek_url is None or seek_url == seeks_reviews:
         seek_count = 0
     else:
-        seek_soup = grab_HTML("Seek", seek_url, 1)
+        seek_soup = grab_HTML(seek_url, 1)
         seek_count = review_volume(seek_soup, "Seek")
     return [indeed_count, seek_count]
 
