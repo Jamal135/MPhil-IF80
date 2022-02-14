@@ -25,10 +25,11 @@ def google_search(queries: list, stop_point: int = 5):
     for query in queries:
         urls = list(search(query, stop=stop_point))
         results.append(urls)
+    print(results)
     return results
 
 
-def validate_search(results: list, name: str, score_threshold: int = 0):
+def validate_search(results: list, name: str, score_threshold: float = 0.38):
     ''' Returns: Most valid URLs if possible. '''
     valid_result = []
     regex = [r'https:\/\/(www|au)\.indeed\.com\/cmp\/(.*)\/reviews$', 
@@ -39,9 +40,10 @@ def validate_search(results: list, name: str, score_threshold: int = 0):
         for result in list:
             if re.match(regex[index], result):
                 url_name = re.search(part[index], result).group(1)
-                scoring.append(SequenceMatcher(None, name, url_name).ratio())
+                scoring.append(SequenceMatcher(None, url_name, name).ratio())
             else:
                 scoring.append(0)
+        print(scoring)
         max_score = max(scoring)
         if max_score > score_threshold:
             valid_result.append(list[scoring.index(max_score)])
