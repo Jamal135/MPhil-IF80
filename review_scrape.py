@@ -6,16 +6,20 @@ from bs4 import BeautifulSoup
 import urllib.request as lib
 from time import sleep
 import pandas
-import tqdm
 import re
 
 # Seeks own reviews seems to break stuff...
 seeks_reviews = "https://www.seek.com.au/companies/seek-432600/reviews"
 
-def gen_query(organisation: str):
+
+def gen_query(organisation: str, specific_site: bool = False):
     ''' Returns: Generated search queries for given name. '''
-    indeed = f'{organisation} Indeed employee reviews'
-    seek = f'{organisation} Seek employee reviews'
+    if specific_site:
+        indeed = f'site:indeed.com {organisation} Indeed employee reviews'
+        seek = f'site:seek.com.au {organisation} Seek employee reviews'
+    else:
+        indeed = f'{organisation} Indeed employee reviews'
+        seek = f'{organisation} Seek employee reviews'
     return [indeed, seek]
 
 
@@ -23,33 +27,36 @@ def google_search(queries: list, stop_point: int = 5):
     ''' Returns: Resulting Google search findings. '''
     results = []
     for query in queries:
+        sleep(0.5)
         urls = list(search(query, stop=stop_point))
         results.append(urls)
-    print(results)
     return results
 
 
-def validate_search(results: list, name: str, score_threshold: float = 0.38):
+def validate_search(results: list, name: str, score_threshold: float = 0.4):
     ''' Returns: Most valid URLs if possible. '''
-    valid_result = []
-    regex = [r'https:\/\/(www|au)\.indeed\.com\/cmp\/(.*)\/reviews$', 
+    valid_result, valid_scores = [], []
+    regex = [r'https:\/\/(www|au)\.indeed\.com\/cmp\/(.*)\/reviews$',
              r'https:\/\/www\.seek\.com\.au\/companies\/(.*)\/reviews$']
     part = [r'mp\/(.*?)\/', r'es\/(.*?)\/']
     for index, list in enumerate(results):
         scoring = []
-        for result in list:
+        for i, result in enumerate(list):
             if re.match(regex[index], result):
                 url_name = re.search(part[index], result).group(1)
-                scoring.append(SequenceMatcher(None, url_name, name).ratio())
+                match_score = (SequenceMatcher(
+                    None, url_name, name).ratio() / 4) * 3
+                place_score = 0.25 - (0.05 * i)
+                scoring.append(round(match_score + place_score, 2))
             else:
                 scoring.append(0)
-        print(scoring)
         max_score = max(scoring)
         if max_score > score_threshold:
             valid_result.append(list[scoring.index(max_score)])
         else:
             valid_result.append(None)
-    return valid_result
+        valid_scores.append(scoring)
+    return valid_result, valid_scores
 
 
 def grab_HTML(url, start):
@@ -105,21 +112,21 @@ def scrape_count(links: list):
 def grab_review_data():
     ''' Returns: '''
     dataframe = pandas.read_csv('AUS_NZ_refined_list.csv', usecols=[
-                                'country', 'founded', 'id', 'industry', 
-                                'linkedin_url', 'locality', 'name', 
+                                'country', 'founded', 'id', 'industry',
+                                'linkedin_url', 'locality', 'name',
                                 'region', 'size', 'website'])
-    for index, row in dataframe.iterrows():
+    for _, row in dataframe.iterrows():
+        sleep(0.5)
         name = row['name']
         print(name)
-        try:
-            queries = gen_query(name)
-            results = google_search(queries)
-            links = validate_search(results, name)
-            print(links)
-            counts = scrape_count(links)
-            print(counts)
-        except:
-            print(str(index) + " skipped: " + name)
+        queries = gen_query(name)
+        results = google_search(queries)
+        links, scores = validate_search(results, name)
+        print(links)
+        print(scores)
+        counts = scrape_count(links)
+        print(counts)
+
 
 grab_review_data()
 
