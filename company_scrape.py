@@ -1,9 +1,8 @@
 import dask.dataframe as dd
 
-country_list = ['australia', 'new_zealand',
-                'united states', 'canada', 'united kingdom']
+country_list = ['australia']
 size_list = ['5001-10000', '10001+']
-output_name = 'refined_list.csv'
+output_name = 'AUS_refined_list.csv'
 
 
 def pull_company_data(country_list, size_list, output_name):

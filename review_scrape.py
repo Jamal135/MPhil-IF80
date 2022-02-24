@@ -5,11 +5,33 @@ from googlesearch import search
 from bs4 import BeautifulSoup
 import urllib.request as lib
 from time import sleep
+from tqdm import tqdm
+import os.path
 import pandas
+import csv
 import re
 
 # Seeks own reviews seems to break stuff...
 seeks_reviews = "https://www.seek.com.au/companies/seek-432600/reviews"
+
+
+def dictionary_build():
+    return {
+        'name': [],
+        'industry': [],
+        'region': [],
+        'size': [],
+        'founded': [],
+        'linkedin_url': [],
+        'indeed_url': [],
+        'indeed_reviews': [],
+        'seek_url': [],
+        'seek_reviews': [],
+        'total_reviews': [],
+        'correct': [],
+        'scores': [],
+        'urls': []
+    }
 
 
 def gen_query(organisation: str, specific_site: bool = False):
@@ -109,25 +131,59 @@ def scrape_count(links: list):
     return [indeed_count, seek_count]
 
 
-def grab_review_data():
+def append_CSV(filename, dic):
+    ''' Returns: Built and named CSV file containing data. '''
+    if not filename.endswith(".csv"):
+        filename += ".csv"
+    file_exists = os.path.isfile(filename)
+    with open(filename, 'a', newline='', encoding='utf-8') as csv_file:
+        writer = csv.writer(csv_file, delimiter=',', lineterminator='\n')
+        headers = list(dic.keys())
+        if not file_exists:
+            writer.writerow(headers)
+        length = len(dic['name'])
+        for i in range(length):
+            data = []
+            for column in headers:
+                data.append(dic[column][i])
+            writer.writerow(data)
+
+
+def grab_dataframe_data(dic, row):
+    ''' Returns: Dictionary with row data and firm name. '''
+    columns = ["name", "industry", "region", "size", "founded", "linkedin_url"]
+    for column in columns:
+        dic[column].append(row[column])
+    dic['correct'].append("Unknown")
+    return dic, row['name']
+
+
+def grab_review_data(output_name, input_name):
     ''' Returns: '''
-    dataframe = pandas.read_csv('AUS_NZ_refined_list.csv', usecols=[
+    if not input_name.endswith(".csv"):
+        input_name += ".csv"
+    dataframe = pandas.read_csv(input_name, usecols=[
                                 'country', 'founded', 'id', 'industry',
                                 'linkedin_url', 'locality', 'name',
                                 'region', 'size', 'website'])
+    dic = dictionary_build()
     for _, row in dataframe.iterrows():
         sleep(0.5)
-        name = row['name']
-        print(name)
+        dic, name = grab_dataframe_data(dic, row)
         queries = gen_query(name)
         results = google_search(queries)
+        dic['urls'].append(results)
         links, scores = validate_search(results, name)
-        print(links)
-        print(scores)
+        dic['indeed_url'].append(links[0])
+        dic['seek_url'].append(links[1])
+        dic['scores'].append(scores)
         counts = scrape_count(links)
-        print(counts)
+        dic['indeed_reviews'].append(counts[0])
+        dic['seek_reviews'].append(counts[1])
+        dic['total_reviews'].append(sum(counts))
+    append_CSV(output_name, dic)
 
 
-grab_review_data()
+grab_review_data("results", "test")
 
 # Make score based url selection optional relative to first fitting url.
