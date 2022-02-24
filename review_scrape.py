@@ -142,7 +142,8 @@ def append_CSV(filename, dic):
         if not file_exists:
             writer.writerow(headers)
         length = len(dic['name'])
-        for i in range(length):
+        print("Building CSV")
+        for i in tqdm(range(length)):
             data = []
             for column in headers:
                 data.append(dic[column][i])
@@ -167,7 +168,9 @@ def grab_review_data(output_name, input_name):
                                 'linkedin_url', 'locality', 'name',
                                 'region', 'size', 'website'])
     dic = dictionary_build()
-    for _, row in dataframe.iterrows():
+    lines = len(dataframe.index)
+    print("Collecting Data")
+    for _, row in tqdm(dataframe.iterrows(), total=lines):
         sleep(0.5)
         dic, name = grab_dataframe_data(dic, row)
         queries = gen_query(name)
