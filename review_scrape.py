@@ -144,9 +144,7 @@ def append_CSV(filename, dic):
         length = len(dic['name'])
         print("Building CSV")
         for i in tqdm(range(length)):
-            data = []
-            for column in headers:
-                data.append(dic[column][i])
+            data = [dic[column][i] for column in headers]
             writer.writerow(data)
 
 
