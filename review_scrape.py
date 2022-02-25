@@ -30,7 +30,7 @@ def dictionary_build():
         'total_reviews': [],
         'correct': [],
         'scores': [],
-        'urls': []
+        'valid_urls': []
     }
 
 
@@ -45,7 +45,7 @@ def gen_query(organisation: str, specific_site: bool = False):
     return [indeed, seek]
 
 
-def google_search(queries: list, stop_point: int = 5):
+def google_search(queries: list, stop_point: int = 6):
     ''' Returns: Resulting Google search findings. '''
     results = []
     for query in queries:
@@ -53,6 +53,17 @@ def google_search(queries: list, stop_point: int = 5):
         urls = list(search(query, stop=stop_point))
         results.append(urls)
     return results
+
+
+def clean_urls(results: list, scores: list):
+    ''' Returns: Dictionary of potentially correct url links. '''
+    valid_urls = {"indeed": [], "seek": []}
+    for list in range(2):
+        for url in range(len(results[list])):
+            if scores[list][url] > 0:
+                valid_urls['indeed' if list == 0 else 'seek'].append(
+                    results[list][url])
+    return valid_urls
 
 
 def validate_search(results: list, name: str, score_threshold: float = 0.4):
@@ -81,7 +92,7 @@ def validate_search(results: list, name: str, score_threshold: float = 0.4):
     return valid_result, valid_scores
 
 
-def grab_HTML(url, start):
+def grab_HTML(url: str, start: int):
     ''' Returns: Selected webpage soup. '''
     for _ in range(15):
         try:
@@ -131,7 +142,7 @@ def scrape_count(links: list):
     return [indeed_count, seek_count]
 
 
-def append_CSV(filename, dic):
+def append_CSV(filename: str, dic: dict):
     ''' Returns: Built and named CSV file containing data. '''
     if not filename.endswith(".csv"):
         filename += ".csv"
@@ -148,7 +159,7 @@ def append_CSV(filename, dic):
             writer.writerow(data)
 
 
-def grab_dataframe_data(dic, row):
+def grab_dataframe_data(dic: dict, row: list):
     ''' Returns: Dictionary with row data and firm name. '''
     columns = ["name", "industry", "region", "size", "founded", "linkedin_url"]
     for column in columns:
@@ -157,8 +168,8 @@ def grab_dataframe_data(dic, row):
     return dic, row['name']
 
 
-def grab_review_data(output_name, input_name):
-    ''' Returns: '''
+def grab_review_data(output_name: str, input_name: str):
+    ''' Returns: Generated CSV of links and additional data. '''
     if not input_name.endswith(".csv"):
         input_name += ".csv"
     dataframe = pandas.read_csv(input_name, usecols=[
@@ -173,8 +184,9 @@ def grab_review_data(output_name, input_name):
         dic, name = grab_dataframe_data(dic, row)
         queries = gen_query(name)
         results = google_search(queries)
-        dic['urls'].append(results)
         links, scores = validate_search(results, name)
+        valid_urls = clean_urls(results, scores)
+        dic['valid_urls'].append(valid_urls)
         dic['indeed_url'].append(links[0])
         dic['seek_url'].append(links[1])
         dic['scores'].append(scores)
@@ -186,5 +198,3 @@ def grab_review_data(output_name, input_name):
 
 
 grab_review_data("results", "test")
-
-# Make score based url selection optional relative to first fitting url.
