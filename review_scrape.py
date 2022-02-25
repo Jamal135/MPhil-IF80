@@ -62,11 +62,10 @@ def verify_names(input_name: str, output_name: str):
 
 def build_dataframe(input_name: str):
     ''' Returns: Built dataframe structure. '''
-    dataframe = pandas.read_csv(input_name, usecols=[
+    return pandas.read_csv(input_name, usecols=[
                                 'country', 'founded', 'id', 'industry',
                                 'linkedin_url', 'locality', 'name',
                                 'region', 'size', 'website'])
-    return dataframe
 
 
 def gen_query(organisation: str):
@@ -125,7 +124,7 @@ def validate_search(results: list, name: str, score_threshold: float = 0.4):
 
 def grab_HTML(url: str, start: int):
     ''' Returns: Selected webpage soup. '''
-    for _ in range(0, 15):
+    for _ in range(15):
         try:
             req = Request(f'{url}?start=' + str(start),
                           headers={'User-Agent': 'Mozilla/5.0'})
@@ -136,9 +135,8 @@ def grab_HTML(url: str, start: int):
             continue
         except URLError as e:
             print(f'\nURL Error: \n{e.reason}')
-            raise Exception(f"Bad URL: {url}")
-    else:
-        raise Exception(f"Failed to get HTML: {url}")
+            raise Exception(f"Bad URL: {url}") from e
+    raise Exception(f"Failed to get HTML: {url}")
 
 
 def review_volume(soup, website: str):
@@ -183,8 +181,8 @@ def verify_dataframe_data(values):
         raise Exception("Invalid size value")
     try:
         float(values[4])
-    except ValueError:
-        raise Exception("Invalid founded value")
+    except ValueError as e:
+        raise Exception("Invalid founded value") from e
     if not values[5].startswith("linkedin.com/company/"):
         raise Exception("Invalid LinkedIn value")
 
@@ -192,9 +190,7 @@ def verify_dataframe_data(values):
 def grab_dataframe_data(dic: dict, row: list):
     ''' Returns: Dictionary with row data and firm name. '''
     columns = ["name", "industry", "region", "size", "founded", "linkedin_url"]
-    values = []
-    for column in columns:
-        values.append(str(row[column]))
+    values = [str(row[column]) for column in columns]
     verify_dataframe_data(values)
     for index, value in enumerate(values):
         dic[columns[index]].append(value)
@@ -232,14 +228,13 @@ def append_CSV(filename: str, dic: dict):
 def error_handling(filename: str, errors: list, dataframe):
     ''' Returns: Generated csv of all rows which errored. '''
     data = []
-    filename = filename[:-4] + '_Errors' + filename[-4:]
+    filename = f'{filename[:-4]}_Errors{filename[-4:]}'
     file_exists = os.path.isfile(filename)
     with open(filename, 'a', newline='', encoding='utf-8') as csv_file:
         writer = csv.writer(csv_file, delimiter=',', lineterminator='\n')
         if not file_exists:
             writer.writerow(["index", "data"])
-        for index in errors:
-            data.append([index] + list(dataframe.iloc[index]))
+        data.extend([index] + list(dataframe.iloc[index]) for index in errors)
         print("Building Error CSV")
         for row in tqdm(data):
             writer.writerow(row)
@@ -272,7 +267,7 @@ def grab_review_data(output_name: str, input_name: str):
             errors.append(index)
             continue
     append_CSV(output_name, dic)
-    if len(errors) != 0:
+    if errors:
         print("Errors Detected...")
         error_handling(input_name, errors, dataframe)
 
