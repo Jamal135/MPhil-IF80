@@ -132,7 +132,7 @@ def grab_HTML(url: str, start: int, website: str, country: str = None):
                     headers={'User-Agent': 'Mozilla/5.0'})
             else:
                 req = Request(
-                    f'{url}?page={start}', 
+                    f'{url}?page={start}',
                     headers={'User-Agent': 'Mozilla/5.0'})
             webpage = urlopen(req)
             return BeautifulSoup(webpage, 'html.parser')
@@ -262,7 +262,7 @@ def error_handling(filename: str, errors: list, dataframe):
     print(f"Error Indexes: \n{errors}")
 
 
-def grab_review_data(output_name: str, input_name: str, country: str = "AU", 
+def grab_review_data(output_name: str, input_name: str, country: str = "AU",
                      print_trace: bool = False):
     ''' Returns: Generated CSV of links and additional data. '''
     output_name, input_name = verify_names(output_name, input_name)
