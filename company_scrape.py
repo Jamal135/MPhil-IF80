@@ -14,5 +14,5 @@ def pull_company_data(output_name, country_list, size_list):
     df_selected.compute().to_csv(output_name)
 
 
-pull_company_data("AUS_5001+_Data",
-                  ['australia'], ['5001-10000', '10001+'])
+pull_company_data("AUS_51+_Data",
+                  ['australia'], ['51-200', '201-500', '501-1000', '1001-5000', '5001-10000', '10001+'])

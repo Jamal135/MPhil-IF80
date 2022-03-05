@@ -24,4 +24,19 @@ def total_review_count(input_name: str):
         for _, row in tqdm(dataframe.iterrows(), total=lines)
     )
 
-print(total_review_count('results'))
+def conditional_review_count(input_name: str, threshold: int = 50):
+    ''' Returns: Conditional total number of reviews. '''
+    if not input_name.endswith(".csv"):
+        input_name += ".csv"
+    dataframe = build_dataframe(input_name)
+    review_total = 0
+    for _, row in dataframe.iterrows():
+        row_value = int(row['total_reviews'])
+        if row_value >= threshold:
+            review_total += row_value
+    return review_total
+
+general_total = total_review_count('AUS_ONLY_5001+_Result')
+print(f'Overall total number reviews: {general_total}')
+threshold_total = conditional_review_count('AUS_ONLY_5001+_Result')
+print(f'Total with over 50 reviews: {threshold_total}')

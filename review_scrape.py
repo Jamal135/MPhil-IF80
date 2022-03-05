@@ -63,9 +63,9 @@ def verify_names(input_name: str, output_name: str):
 def build_dataframe(input_name: str):
     ''' Returns: Built dataframe structure. '''
     return pandas.read_csv(input_name, usecols=[
-                                'country', 'founded', 'id', 'industry',
-                                'linkedin_url', 'locality', 'name',
-                                'region', 'size', 'website'])
+        'country', 'founded', 'id', 'industry',
+        'linkedin_url', 'locality', 'name',
+        'region', 'size', 'website'])
 
 
 def gen_query(organisation: str):
@@ -122,12 +122,18 @@ def validate_search(results: list, name: str, score_threshold: float = 0.4):
     return valid_result, valid_scores
 
 
-def grab_HTML(url: str, start: int):
+def grab_HTML(url: str, start: int, website: str, country: str = None):
     ''' Returns: Selected webpage soup. '''
     for _ in range(15):
         try:
-            req = Request(f'{url}?start=' + str(start),
-                          headers={'User-Agent': 'Mozilla/5.0'})
+            if website == "Indeed":
+                req = Request(
+                    f'{url}?start={start}&fcountry={country}',
+                    headers={'User-Agent': 'Mozilla/5.0'})
+            else:
+                req = Request(
+                    f'{url}?page={start}', 
+                    headers={'User-Agent': 'Mozilla/5.0'})
             webpage = urlopen(req)
             return BeautifulSoup(webpage, 'html.parser')
         except HTTPError as e:
@@ -135,7 +141,7 @@ def grab_HTML(url: str, start: int):
             continue
         except URLError as e:
             print(f'\nURL Error: \n{e.reason}')
-            raise Exception(f"Bad URL: {url}") from e
+            raise Exception(f'Bad URL: {url}') from e
     raise Exception(f"Failed to get HTML: {url}")
 
 
@@ -145,11 +151,14 @@ def review_volume(soup, website: str):
         overview_data = soup.find(
             'div', attrs={'data-testid': 'review-count'})
         try:
-            number_reviews = int(overview_data.find(
-                'span').find('b').text.replace(',', ''))
-        except:
-            number_reviews = int(re.findall(
-                r'\d+', overview_data.find('span').text)[0])
+            try:
+                number_reviews = int(overview_data.find(
+                    'span').find('b').text.replace(',', ''))
+            except:
+                number_reviews = int(re.findall(
+                    r'\d+', overview_data.find('span').text)[0])
+        except AttributeError:
+            number_reviews = 0
     elif website == "Seek":
         overview_data = soup.find('div', attrs={'id': 'app'})
         number_reviews = int((overview_data.text.split(
@@ -157,26 +166,27 @@ def review_volume(soup, website: str):
     return number_reviews
 
 
-def scrape_count(links: list):
+def scrape_count(links: list, country: str):
     ''' Returns: Number of reviews at link. '''
     indeed_url = links[0]
     if indeed_url is None:
         indeed_count = 0
     else:
-        indeed_soup = grab_HTML(indeed_url, 0)
+        indeed_soup = grab_HTML(indeed_url, 0, "Indeed", country)
         indeed_count = review_volume(indeed_soup, "Indeed")
     seek_url = links[1]
     if seek_url is None or seek_url == seeks_reviews:
         seek_count = 0
     else:
-        seek_soup = grab_HTML(seek_url, 1)
+        seek_soup = grab_HTML(seek_url, 1, "Seek")
         seek_count = review_volume(seek_soup, "Seek")
     return [indeed_count, seek_count]
 
 
 def verify_dataframe_data(values):
     ''' Raises exception if wrong values found. '''
-    sizes = ['1-10', '11-50', '51-200', '201-500', '501-1000', '1001-5000', '5001-10000', '10001+']
+    sizes = ['1-10', '11-50', '51-200', '201-500',
+             '501-1000', '1001-5000', '5001-10000', '10001+']
     if values[3] not in sizes:
         raise Exception("Invalid size value")
     try:
@@ -210,6 +220,18 @@ def append_data(dic: dict, valid_urls: dict, links: list, scores: list, counts: 
     return dic
 
 
+def data_attach(dic: dict, row: list, country: str):
+    ''' Returns: Collected data attached to dictionary. '''
+    name = row['name']
+    queries = gen_query(name)
+    results = google_search(queries)
+    links, scores = validate_search(results, name)
+    valid_urls = clean_urls(results, scores)
+    counts = scrape_count(links, country)
+    dic = grab_dataframe_data(dic, row)
+    return append_data(dic, valid_urls, links, scores, counts)
+
+
 def append_CSV(filename: str, dic: dict):
     ''' Returns: Built and named CSV file containing data. '''
     file_exists = os.path.isfile(filename)
@@ -219,8 +241,7 @@ def append_CSV(filename: str, dic: dict):
         if not file_exists:
             writer.writerow(headers)
         length = len(dic['name'])
-        print("Building CSV")
-        for i in tqdm(range(length)):
+        for i in range(length):
             data = [dic[column][i] for column in headers]
             writer.writerow(data)
 
@@ -241,7 +262,8 @@ def error_handling(filename: str, errors: list, dataframe):
     print(f"Error Indexes: \n{errors}")
 
 
-def grab_review_data(output_name: str, input_name: str):
+def grab_review_data(output_name: str, input_name: str, country: str = "AU", 
+                     print_trace: bool = False):
     ''' Returns: Generated CSV of links and additional data. '''
     output_name, input_name = verify_names(output_name, input_name)
     dataframe = build_dataframe(input_name)
@@ -251,19 +273,16 @@ def grab_review_data(output_name: str, input_name: str):
     print("Collecting Data")
     for index, row in tqdm(dataframe.iterrows(), total=lines):
         try:
-            name = row['name']
-            queries = gen_query(name)
-            results = google_search(queries)
-            links, scores = validate_search(results, name)
-            valid_urls = clean_urls(results, scores)
-            counts = scrape_count(links)
-            dic = grab_dataframe_data(dic, row)
-            dic = append_data(dic, valid_urls, links, scores, counts)
+            dic = data_attach(dic, row, country)
+            if index % 100 == 0:
+                append_CSV(output_name, dic)
+                dic = dictionary_build()
         except KeyboardInterrupt:
             halt()
         except:
             print(f"\nRow Failed: {index}")
-            traceback.print_exc()
+            if print_trace:
+                traceback.print_exc()
             errors.append(index)
             continue
     append_CSV(output_name, dic)
@@ -272,4 +291,4 @@ def grab_review_data(output_name: str, input_name: str):
         error_handling(input_name, errors, dataframe)
 
 
-grab_review_data("results", "AUS_5001+_Data")
+grab_review_data("AUS_ONLY_1001+_Result", "AUS_1001+_Data", print_trace=True)
