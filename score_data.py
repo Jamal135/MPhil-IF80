@@ -36,7 +36,7 @@ def conditional_review_count(input_name: str, threshold: int = 50):
             review_total += row_value
     return review_total
 
-general_total = total_review_count('AUS_ONLY_5001+_Result')
+general_total = total_review_count('AUS_ONLY_1001+_Result')
 print(f'Overall total number reviews: {general_total}')
-threshold_total = conditional_review_count('AUS_ONLY_5001+_Result')
+threshold_total = conditional_review_count('AUS_ONLY_1001+_Result')
 print(f'Total with over 50 reviews: {threshold_total}')
