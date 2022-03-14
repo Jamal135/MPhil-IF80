@@ -251,7 +251,7 @@ def error_handling(filename: str, errors: list, dataframe):
     ''' Returns: Generated csv of all rows which errored. '''
     data = []
     with open(log_location, 'a') as log:
-        log.write(f'\n\n{str(errors)}')
+        log.write(f'\n\n{errors}')
     filename = f'{filename[:-4]}_Error_Rows.csv'
     with open(f'links/{filename}', 'w', newline='', encoding='utf-8') as csv_file:
         writer = csv.writer(csv_file, delimiter=',', lineterminator='\n')
