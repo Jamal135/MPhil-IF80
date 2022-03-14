@@ -113,6 +113,6 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-*.csv
+companies/PDL_Company_Dataset.csv
 
 *.google-cookie

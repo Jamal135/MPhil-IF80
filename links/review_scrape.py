@@ -8,12 +8,19 @@ from bs4 import BeautifulSoup
 from time import sleep
 from tqdm import tqdm
 import traceback
+import logging
 import os.path
 import pandas
 import csv
 import sys
 import re
 import os
+
+
+#logging.basicConfig(filename='links/error_log.txt', level=logging.DEBUG, 
+#                    format='%(asctime)s %(levelname)s %(name)s %(message)s')
+#logger=logging.getLogger(__name__)
+log_location = "links/links_error_log.txt"
 
 # Seeks own reviews seems to break stuff...
 seeks_reviews = "https://www.seek.com.au/companies/seek-432600/reviews"
@@ -29,6 +36,7 @@ def halt():
 
 def dictionary_build():
     return {
+        'index': [],
         'name': [],
         'industry': [],
         'region': [],
@@ -63,7 +71,7 @@ def verify_names(input_name: str, output_name: str):
 def build_dataframe(input_name: str):
     ''' Returns: Built dataframe structure. '''
     return pandas.read_csv(input_name, usecols=[
-        'country', 'founded', 'id', 'industry',
+        'index', 'country', 'founded', 'id', 'industry',
         'linkedin_url', 'locality', 'name',
         'region', 'size', 'website'])
 
@@ -124,25 +132,21 @@ def validate_search(results: list, name: str, score_threshold: float = 0.4):
 
 def grab_HTML(url: str, start: int, website: str, country: str = None):
     ''' Returns: Selected webpage soup. '''
-    for _ in range(15):
-        try:
-            if website == "Indeed":
-                req = Request(
-                    f'{url}?start={start}&fcountry={country}',
-                    headers={'User-Agent': 'Mozilla/5.0'})
-            else:
-                req = Request(
-                    f'{url}?page={start}',
-                    headers={'User-Agent': 'Mozilla/5.0'})
-            webpage = urlopen(req)
-            return BeautifulSoup(webpage, 'html.parser')
-        except HTTPError as e:
-            print(f'\nHTTP Error: \n{e.code}')
-            continue
-        except URLError as e:
-            print(f'\nURL Error: \n{e.reason}')
-            raise Exception(f'Bad URL: {url}') from e
-    raise Exception(f"Failed to get HTML: {url}")
+    try:
+        if website == "Indeed":
+            req = Request(
+                f'{url}?start={start}&fcountry={country}',
+                headers={'User-Agent': 'Mozilla/5.0'})
+        else:
+            req = Request(
+                f'{url}?page={start}',
+                headers={'User-Agent': 'Mozilla/5.0'})
+        webpage = urlopen(req)
+        return BeautifulSoup(webpage, 'html.parser')
+    except HTTPError as e:
+        raise Exception(f'\nHTTP Error: \n{e.code}\n URL: {url}')
+    except URLError as e:
+        raise Exception(f'Bad URL: {url}') from e
 
 
 def review_volume(soup, website: str):
@@ -187,19 +191,20 @@ def verify_dataframe_data(values):
     ''' Raises exception if wrong values found. '''
     sizes = ['1-10', '11-50', '51-200', '201-500',
              '501-1000', '1001-5000', '5001-10000', '10001+']
-    if values[3] not in sizes:
+    if values[4] not in sizes:
         raise Exception("Invalid size value")
     try:
-        float(values[4])
+        float(values[5])
     except ValueError as e:
         raise Exception("Invalid founded value") from e
-    if not values[5].startswith("linkedin.com/company/"):
+    if not values[6].startswith("linkedin.com/company/"):
         raise Exception("Invalid LinkedIn value")
 
 
 def grab_dataframe_data(dic: dict, row: list):
     ''' Returns: Dictionary with row data and firm name. '''
-    columns = ["name", "industry", "region", "size", "founded", "linkedin_url"]
+    columns = ["index", "name", "industry",
+               "region", "size", "founded", "linkedin_url"]
     values = [str(row[column]) for column in columns]
     verify_dataframe_data(values)
     for index, value in enumerate(values):
@@ -234,8 +239,8 @@ def data_attach(dic: dict, row: list, country: str):
 
 def append_CSV(filename: str, dic: dict):
     ''' Returns: Built and named CSV file containing data. '''
-    file_exists = os.path.isfile(filename)
-    with open(filename, 'a', newline='', encoding='utf-8') as csv_file:
+    file_exists = os.path.isfile(f'links/{filename}')
+    with open(f'links/{filename}', 'a', newline='', encoding='utf-8') as csv_file:
         writer = csv.writer(csv_file, delimiter=',', lineterminator='\n')
         headers = list(dic.keys())
         if not file_exists:
@@ -249,12 +254,12 @@ def append_CSV(filename: str, dic: dict):
 def error_handling(filename: str, errors: list, dataframe):
     ''' Returns: Generated csv of all rows which errored. '''
     data = []
-    filename = f'{filename[:-4]}_Errors{filename[-4:]}'
-    file_exists = os.path.isfile(filename)
-    with open(filename, 'a', newline='', encoding='utf-8') as csv_file:
+    with open(log_location, 'a') as log:
+        log.write(f'\n\n{str(errors)}')
+    filename = f'{filename[:-4]}_Error_Rows.csv'
+    with open(f'links/{filename}', 'w', newline='', encoding='utf-8') as csv_file:
         writer = csv.writer(csv_file, delimiter=',', lineterminator='\n')
-        if not file_exists:
-            writer.writerow(["index", "data"])
+        writer.writerow(["index", "data"])
         data.extend([index] + list(dataframe.iloc[index]) for index in errors)
         print("Building Error CSV")
         for row in tqdm(data):
@@ -262,8 +267,7 @@ def error_handling(filename: str, errors: list, dataframe):
     print(f"Error Indexes: \n{errors}")
 
 
-def grab_review_data(output_name: str, input_name: str, country: str = "AU",
-                     print_trace: bool = False):
+def grab_review_data(output_name: str, input_name: str, country: str = "AU", start: int = 0):
     ''' Returns: Generated CSV of links and additional data. '''
     output_name, input_name = verify_names(output_name, input_name)
     dataframe = build_dataframe(input_name)
@@ -271,7 +275,11 @@ def grab_review_data(output_name: str, input_name: str, country: str = "AU",
     lines = len(dataframe.index)
     errors = []
     print("Collecting Data")
+    if os.path.exists(log_location):
+        os.remove(log_location)
     for index, row in tqdm(dataframe.iterrows(), total=lines):
+        if index < start:
+            continue
         try:
             dic = data_attach(dic, row, country)
             if index % 100 == 0:
@@ -279,16 +287,19 @@ def grab_review_data(output_name: str, input_name: str, country: str = "AU",
                 dic = dictionary_build()
         except KeyboardInterrupt:
             halt()
-        except:
-            print(f"\nRow Failed: {index}")
-            if print_trace:
-                traceback.print_exc()
-            errors.append(index)
-            continue
+        except Exception as e:
+            with open(log_location, 'a') as log:
+                print(f"\nRow Failed: {index}")
+                log.write(f'Row Failed: {index}\n')
+                log.write(str(e))
+                log.write(f'{traceback.format_exc()}\n\n')
+                errors.append(index)
+                continue
     append_CSV(output_name, dic)
     if errors:
         print("Errors Detected...")
-        error_handling(input_name, errors, dataframe)
+        error_handling(output_name, errors, dataframe)
 
 
-grab_review_data("AUS_ONLY_1001+_Result", "AUS_1001+_Data", print_trace=True)
+#grab_review_data("AUS_1001+_Links", "companies/AUS_1001+_Data")
+
