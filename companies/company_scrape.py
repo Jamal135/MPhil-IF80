@@ -1,6 +1,7 @@
 # Creation Date: 10/02/2022
 
 import dask.dataframe as dd
+import pandas as pd
 import contextlib
 import csv
 import os
@@ -15,12 +16,12 @@ main_countries = ['australia', 'canada',
                   'new zealand', 'united kingdom', 'united states']
 
 
-def log_errors(output_name: str):
+def log_errors(output_name: str, country_list: list, size_list: list):
     ''' Purpose: Enables checking of all lines which errored. '''
     with open(log_location, 'r') as file:
         data = file.read().replace('\n', '')
     error_lines = re.findall(r'Skipping line ([0-9]+):', data)
-    print(f'Found {len(error_lines)} lines that require review.')
+    print(f"Found {len(error_lines)} lines that can't load.")
     print(error_lines)
     with open("companies/free_company_dataset.csv", encoding='utf8') as sample:
         csv_reader = csv.reader(sample)
@@ -28,7 +29,9 @@ def log_errors(output_name: str):
         error_list = []
         for index in error_lines:
             row_data = rows[int(index)]
-            error_list.append(row_data)
+            if any(country in row_data for country in country_list) and any(
+                size in row_data for size in size_list):
+                error_list.append(row_data)
     with open(f'companies/{output_name[:-4]}_Errors.csv', 'w', encoding='utf8', newline='') as errors:
         writer = csv.writer(errors)
         writer.writerows(error_list)
@@ -42,15 +45,15 @@ def build_company_data(output_name: str, country_list: list, size_list: list):
         os.remove(log_location)
     with open(log_location, 'x') as log:
         with contextlib.redirect_stderr(log):
-            df = dd.read_csv("companies/free_company_dataset.csv",
-                             on_bad_lines='warn', encoding='utf8')
+            df = dd.read_csv("companies/free_company_dataset.csv", low_memory=False,
+                             on_bad_lines='warn', encoding='utf8', lineterminator='\n')
             df_selected = df[(df['country'].isin(country_list))
                              & (df['size'].isin(size_list))]
             df_selected.compute().to_csv(f'companies/{output_name}')
-    log_errors(output_name)
+    log_errors(output_name, country_list, size_list)
 
 
-build_company_data("Focus_Company_List", main_countries, any_size)
+build_company_data("Focus_Company_List", main_countries, any_size[4:])
 
 
 def pull_specific_data(output_name: str, country_list: list, size_list: list):
