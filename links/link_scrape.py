@@ -8,7 +8,6 @@ from bs4 import BeautifulSoup
 from time import sleep
 from tqdm import tqdm
 import traceback
-import logging
 import os.path
 import pandas
 import csv
@@ -17,9 +16,6 @@ import re
 import os
 
 
-#logging.basicConfig(filename='links/error_log.txt', level=logging.DEBUG, 
-#                    format='%(asctime)s %(levelname)s %(name)s %(message)s')
-#logger=logging.getLogger(__name__)
 log_location = "links/links_error_log.txt"
 
 # Seeks own reviews seems to break stuff...
