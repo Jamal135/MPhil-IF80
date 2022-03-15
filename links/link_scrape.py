@@ -161,21 +161,25 @@ def review_volume(soup, website: str):
             number_reviews = 0
     elif website == "Seek":
         overview_data = soup.find('div', attrs={'id': 'app'})
-        number_reviews = int((overview_data.text.split(
-            "ReviewOverviewReviews"))[1].split("JobsTop")[0])
+        try:
+            number_reviews = int((overview_data.text.split(
+                "ReviewOverviewReviews"))[1].split("JobsTop")[0])
+        except:
+            number_reviews = int(
+                re.findall(r'total rating from ([0-9]+)', overview_data.text)[0])
     return number_reviews
 
 
 def scrape_count(links: list, country: str):
     ''' Returns: Number of reviews at link. '''
     indeed_url = links[0]
-    if indeed_url is None:
+    if not indeed_url:
         indeed_count = 0
     else:
         indeed_soup = grab_HTML(indeed_url, 0, "Indeed", country)
         indeed_count = review_volume(indeed_soup, "Indeed")
     seek_url = links[1]
-    if seek_url is None or seek_url == seeks_reviews:
+    if not seek_url or seek_url == seeks_reviews:
         seek_count = 0
     else:
         seek_soup = grab_HTML(seek_url, 1, "Seek")
@@ -221,13 +225,22 @@ def append_data(dic: dict, valid_urls: dict, links: list, scores: list, counts: 
     return dic
 
 
-def data_attach(dic: dict, row: list, country: str):
+def data_attach(dic: dict, row: list, country: str, manual: bool = False):
     ''' Returns: Collected data attached to dictionary. '''
     name = row['name']
-    queries = gen_query(name)
-    results = google_search(queries)
-    links, scores = validate_search(results, name)
-    valid_urls = clean_urls(results, scores)
+    if not manual:
+        queries = gen_query(name)
+        results = google_search(queries)
+        links, scores = validate_search(results, name)
+        valid_urls = clean_urls(results, scores)
+    else:
+        print(f'Organisation: {name}')
+        print(f'LinkedIn: https://{row["linkedin_url"]}')
+        indeed_url = input("Indeed URL: ")
+        seek_url = input("Seek URL: ")
+        links = [indeed_url, seek_url]
+        valid_urls = {"indeed": [], "seek": []}
+        scores = [[], []]
     counts = scrape_count(links, country)
     dic = grab_dataframe_data(dic, row)
     return append_data(dic, valid_urls, links, scores, counts)
@@ -255,8 +268,10 @@ def error_handling(filename: str, errors: list, dataframe):
     filename = f'{filename[:-4]}_Error_Rows.csv'
     with open(f'links/{filename}', 'w', newline='', encoding='utf-8') as csv_file:
         writer = csv.writer(csv_file, delimiter=',', lineterminator='\n')
-        writer.writerow(["index", "data"])
-        data.extend([index] + list(dataframe.iloc[index]) for index in errors)
+        writer.writerow(['index', 'country', 'founded', 'id', 'industry',
+                        'linkedin_url', 'locality', 'name', 'region', 'size', 'website'])
+        data.extend([index] + list(dataframe.iloc[index])[1:]
+                    for index in errors)
         print("Building Error CSV")
         for row in tqdm(data):
             writer.writerow(row)
@@ -299,3 +314,18 @@ def grab_review_data(output_name: str, input_name: str, country: str = "AU", sta
 
 #grab_review_data("AUS_1001+_Links", "companies/AUS_1001+_Data")
 
+
+def manual_error_handling(filename: str, country: str = "AU"):
+    ''' Returns: Same file with manually handled errors appended. '''
+    if not filename.endswith('.csv'):
+        filename += '.csv'
+    dataframe = build_dataframe(f'links/{filename[:-4]}_Error_Rows.csv')
+    lines = len(dataframe.index)
+    print(f"Found {lines} to correct")
+    dic = dictionary_build()
+    for _, row in dataframe.iterrows():
+        dic = data_attach(dic, row, country, manual=True)
+    append_CSV(filename, dic)
+
+
+manual_error_handling("AUS_1001+_Links")
