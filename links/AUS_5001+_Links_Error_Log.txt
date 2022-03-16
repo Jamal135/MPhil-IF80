@@ -1,0 +1,41 @@
+Row Failed: 69
+
+HTTP Error: 
+404
+ URL: https://www.seek.com.au/companies/melbourne-signs-936385/reviewsTraceback (most recent call last):
+  File "c:\Users\Jamal135\Documents\135Project\Company-List-Scrape\links\link_scrape.py", line 138, in grab_HTML
+    webpage = urlopen(req)
+  File "C:\Users\Jamal135\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 216, in urlopen
+    return opener.open(url, data, timeout)
+  File "C:\Users\Jamal135\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 525, in open
+    response = meth(req, response)
+  File "C:\Users\Jamal135\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 634, in http_response
+    response = self.parent.error(
+  File "C:\Users\Jamal135\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 563, in error
+    return self._call_chain(*args)
+  File "C:\Users\Jamal135\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 496, in _call_chain
+    result = func(*args)
+  File "C:\Users\Jamal135\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 643, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 404: Not Found
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "c:\Users\Jamal135\Documents\135Project\Company-List-Scrape\links\link_scrape.py", line 293, in grab_review_data
+    dic = data_attach(dic, row, country)
+  File "c:\Users\Jamal135\Documents\135Project\Company-List-Scrape\links\link_scrape.py", line 242, in data_attach
+    counts = scrape_count(links, country)
+  File "c:\Users\Jamal135\Documents\135Project\Company-List-Scrape\links\link_scrape.py", line 183, in scrape_count
+    seek_soup = grab_HTML(seek_url, 1, "Seek")
+  File "c:\Users\Jamal135\Documents\135Project\Company-List-Scrape\links\link_scrape.py", line 141, in grab_HTML
+    raise Exception(f'\nHTTP Error: \n{e.code}\n URL: {url}')
+Exception: 
+HTTP Error: 
+404
+ URL: https://www.seek.com.au/companies/melbourne-signs-936385/reviews
+
+
+
+
+[69]

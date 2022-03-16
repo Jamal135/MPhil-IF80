@@ -11,7 +11,7 @@ headers = ['index', 'country', 'founded', 'id', 'industry',
            'linkedin_url', 'locality', 'name', 'region', 'size', 'website']
 
 # Download dataset CSV: https://www.peopledatalabs.com/company-dataset?creative=526382233178&keyword=company%20dataset&matchtype=p&network=g&device=c&utm_medium=search&utm_term=company%20dataset&utm_campaign=Free%20Datasets%20-%20Itnl&utm_source=google&hsa_tgt=kwd-440039917377&hsa_net=ppc&hsa_src=g&hsa_kw=company%20dataset&hsa_cam=2064790728&hsa_ver=3&hsa_ad=526382233178&hsa_mt=p&hsa_acc=3068533947&hsa_grp=124908126682&gclid=Cj0KCQiA_c-OBhDFARIsAIFg3ex2_yeQAkkNJjAwavKDfHQBtCw7jNp9Hx6S_cAqcyBW9wcU7Oz8gAIaAs2iEALw_wcB
-log_location = "companies/companies_error_log.txt"
+log_location = "companies/Companies_Error_Log.txt"
 any_size = ['1-10', '11-50', '51-200', '201-500',
             '501-1000', '1001-5000', '5001-10000', '10001+']
 main_countries = ['australia', 'new zealand']
@@ -57,7 +57,7 @@ def build_company_data(output_name: str, country_list: list, size_list: list):
     log_errors(output_name, country_list, size_list)
 
 
-build_company_data("Focus_Company_List", main_countries, any_size[3:])
+#build_company_data("Focus_Company_List", main_countries, any_size[3:])
 
 
 def pull_specific_data(output_name: str, input_name: str, country_list: list, size_list: list):
@@ -74,5 +74,5 @@ def pull_specific_data(output_name: str, input_name: str, country_list: list, si
                                  header=headers)
 
 
-pull_specific_data("AUS_1001+_Data", "AUS-NZ_Companies_201+",
-                   ["australia"], any_size[5:])
+#pull_specific_data("AUS_501+_Data", "AUS-NZ_Companies_201+",
+#                   ["australia"], any_size[4:])

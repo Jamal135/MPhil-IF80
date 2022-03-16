@@ -16,8 +16,6 @@ import re
 import os
 
 
-log_location = "links/links_error_log.txt"
-
 # Seeks own reviews seems to break stuff...
 seeks_reviews = "https://www.seek.com.au/companies/seek-432600/reviews"
 
@@ -263,7 +261,7 @@ def append_CSV(filename: str, dic: dict):
 def error_handling(filename: str, errors: list, dataframe):
     ''' Returns: Generated csv of all rows which errored. '''
     data = []
-    with open(log_location, 'a') as log:
+    with open(f'links/{filename[:-4]}_Error_Log.txt', 'a') as log:
         log.write(f'\n\n{errors}')
     filename = f'{filename[:-4]}_Error_Rows.csv'
     with open(f'links/{filename}', 'w', newline='', encoding='utf-8') as csv_file:
@@ -286,8 +284,8 @@ def grab_review_data(output_name: str, input_name: str, country: str = "AU", sta
     lines = len(dataframe.index)
     errors = []
     print("Collecting Data")
-    if os.path.exists(log_location):
-        os.remove(log_location)
+    if os.path.exists(f'links/{output_name[:-4]}_Error_Log.txt'):
+        os.remove(f'links/{output_name[:-4]}_Error_Log.txt')
     for index, row in tqdm(dataframe.iterrows(), total=lines):
         if index < start:
             continue
@@ -299,7 +297,7 @@ def grab_review_data(output_name: str, input_name: str, country: str = "AU", sta
         except KeyboardInterrupt:
             halt()
         except Exception as e:
-            with open(log_location, 'a') as log:
+            with open(f'links/{output_name[:-4]}_Error_Log.txt', 'a') as log:
                 print(f"\nRow Failed: {index}")
                 log.write(f'Row Failed: {index}\n')
                 log.write(str(e))
@@ -312,7 +310,7 @@ def grab_review_data(output_name: str, input_name: str, country: str = "AU", sta
         error_handling(output_name, errors, dataframe)
 
 
-#grab_review_data("AUS_1001+_Links", "companies/AUS_1001+_Data")
+grab_review_data("AUS_5001+_Links", "companies/AUS_5001+_Data")
 
 
 def manual_error_handling(filename: str, country: str = "AU"):
@@ -325,7 +323,7 @@ def manual_error_handling(filename: str, country: str = "AU"):
     dic = dictionary_build()
     for _, row in dataframe.iterrows():
         dic = data_attach(dic, row, country, manual=True)
-    append_CSV(filename, dic)
+    append_CSV(f'links/{filename[:-4]}_Corrected.csv', dic)
 
 
-manual_error_handling("AUS_1001+_Links")
+#manual_error_handling("AUS_1001+_Links")
