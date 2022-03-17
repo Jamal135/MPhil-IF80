@@ -1,0 +1,721 @@
+Row Failed: 582
+Bad URL: https://au.indeed.com/cmp/Achieve-Australia/reviewsTraceback (most recent call last):
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 1348, in do_open
+    h.request(req.get_method(), req.selector, req.data, headers,
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\http\client.py", line 1282, in request
+    self._send_request(method, url, body, headers, encode_chunked)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\http\client.py", line 1328, in _send_request
+    self.endheaders(body, encode_chunked=encode_chunked)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\http\client.py", line 1277, in endheaders
+    self._send_output(message_body, encode_chunked=encode_chunked)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\http\client.py", line 1037, in _send_output
+    self.send(msg)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\http\client.py", line 975, in send
+    self.connect()
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\http\client.py", line 1447, in connect
+    super().connect()
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\http\client.py", line 941, in connect
+    self.sock = self._create_connection(
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\socket.py", line 824, in create_connection
+    for res in getaddrinfo(host, port, 0, SOCK_STREAM):
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\socket.py", line 955, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+socket.gaierror: [Errno 11001] getaddrinfo failed
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 138, in grab_HTML
+    webpage = urlopen(req)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 216, in urlopen
+    return opener.open(url, data, timeout)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 519, in open
+    response = self._open(req, data)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 536, in _open
+    result = self._call_chain(self.handle_open, protocol, protocol +
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 496, in _call_chain
+    result = func(*args)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 1391, in https_open
+    return self.do_open(http.client.HTTPSConnection, req,
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 1351, in do_open
+    raise URLError(err)
+urllib.error.URLError: <urlopen error [Errno 11001] getaddrinfo failed>
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 291, in grab_review_data
+    dic = data_attach(dic, row, country)
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 241, in data_attach
+    counts = scrape_count(links, country)
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 174, in scrape_count
+    indeed_soup = grab_HTML(indeed_url, 0, "Indeed", country)
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 143, in grab_HTML
+    raise Exception(f'Bad URL: {url}') from e
+Exception: Bad URL: https://au.indeed.com/cmp/Achieve-Australia/reviews
+
+
+Row Failed: 601
+list index out of rangeTraceback (most recent call last):
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 163, in review_volume
+    number_reviews = int((overview_data.text.split(
+ValueError: invalid literal for int() with base 10: "0JobsThere arent any matching reviews. Would you like to write one?Have your sayLet others know what it's like to work at Hotel KurrajongClick to rate0 out of 5ToolsJob searchProfileRecommended jobsS
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 291, in grab_review_data
+    dic = data_attach(dic, row, country)
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 241, in data_attach
+    counts = scrape_count(links, country)
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 183, in scrape_count
+    seek_count = review_volume(seek_soup, "Seek")
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 167, in review_volume
+    re.findall(r'total rating from ([0-9]+)', overview_data.text)[0])
+IndexError: list index out of range
+
+
+Row Failed: 616
+
+HTTP Error: 
+404
+ URL: https://www.seek.com.au/companies/melbourne-signs-936385/reviewsTraceback (most recent call last):
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 138, in grab_HTML
+    webpage = urlopen(req)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 216, in urlopen
+    return opener.open(url, data, timeout)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 525, in open
+    response = meth(req, response)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 634, in http_response
+    response = self.parent.error(
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 563, in error
+    return self._call_chain(*args)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 496, in _call_chain
+    result = func(*args)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 643, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 404: Not Found
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 291, in grab_review_data
+    dic = data_attach(dic, row, country)
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 241, in data_attach
+    counts = scrape_count(links, country)
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 182, in scrape_count
+    seek_soup = grab_HTML(seek_url, 1, "Seek")
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 141, in grab_HTML
+    raise Exception(f'\nHTTP Error: \n{e.code}\n URL: {url}')
+Exception: 
+HTTP Error: 
+404
+ URL: https://www.seek.com.au/companies/melbourne-signs-936385/reviews
+
+
+Row Failed: 734
+
+HTTP Error: 
+404
+ URL: https://www.seek.com.au/companies/laser-group-434193/reviewsTraceback (most recent call last):
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 138, in grab_HTML
+    webpage = urlopen(req)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 216, in urlopen
+    return opener.open(url, data, timeout)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 525, in open
+    response = meth(req, response)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 634, in http_response
+    response = self.parent.error(
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 563, in error
+    return self._call_chain(*args)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 496, in _call_chain
+    result = func(*args)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 643, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 404: Not Found
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 291, in grab_review_data
+    dic = data_attach(dic, row, country)
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 241, in data_attach
+    counts = scrape_count(links, country)
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 182, in scrape_count
+    seek_soup = grab_HTML(seek_url, 1, "Seek")
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 141, in grab_HTML
+    raise Exception(f'\nHTTP Error: \n{e.code}\n URL: {url}')
+Exception: 
+HTTP Error: 
+404
+ URL: https://www.seek.com.au/companies/laser-group-434193/reviews
+
+
+Row Failed: 762
+Bad URL: https://www.seek.com.au/companies/stellar-432939/reviewsTraceback (most recent call last):
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 1348, in do_open
+    h.request(req.get_method(), req.selector, req.data, headers,
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\http\client.py", line 1282, in request
+    self._send_request(method, url, body, headers, encode_chunked)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\http\client.py", line 1328, in _send_request
+    self.endheaders(body, encode_chunked=encode_chunked)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\http\client.py", line 1277, in endheaders
+    self._send_output(message_body, encode_chunked=encode_chunked)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\http\client.py", line 1037, in _send_output
+    self.send(msg)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\http\client.py", line 975, in send
+    self.connect()
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\http\client.py", line 1447, in connect
+    super().connect()
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\http\client.py", line 941, in connect
+    self.sock = self._create_connection(
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\socket.py", line 824, in create_connection
+    for res in getaddrinfo(host, port, 0, SOCK_STREAM):
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\socket.py", line 955, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+socket.gaierror: [Errno 11001] getaddrinfo failed
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 138, in grab_HTML
+    webpage = urlopen(req)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 216, in urlopen
+    return opener.open(url, data, timeout)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 519, in open
+    response = self._open(req, data)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 536, in _open
+    result = self._call_chain(self.handle_open, protocol, protocol +
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 496, in _call_chain
+    result = func(*args)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 1391, in https_open
+    return self.do_open(http.client.HTTPSConnection, req,
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 1351, in do_open
+    raise URLError(err)
+urllib.error.URLError: <urlopen error [Errno 11001] getaddrinfo failed>
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 291, in grab_review_data
+    dic = data_attach(dic, row, country)
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 241, in data_attach
+    counts = scrape_count(links, country)
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 182, in scrape_count
+    seek_soup = grab_HTML(seek_url, 1, "Seek")
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 143, in grab_HTML
+    raise Exception(f'Bad URL: {url}') from e
+Exception: Bad URL: https://www.seek.com.au/companies/stellar-432939/reviews
+
+
+Row Failed: 852
+Bad URL: https://www.seek.com.au/companies/perth-arena-434158/reviewsTraceback (most recent call last):
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 1348, in do_open
+    h.request(req.get_method(), req.selector, req.data, headers,
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\http\client.py", line 1282, in request
+    self._send_request(method, url, body, headers, encode_chunked)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\http\client.py", line 1328, in _send_request
+    self.endheaders(body, encode_chunked=encode_chunked)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\http\client.py", line 1277, in endheaders
+    self._send_output(message_body, encode_chunked=encode_chunked)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\http\client.py", line 1037, in _send_output
+    self.send(msg)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\http\client.py", line 975, in send
+    self.connect()
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\http\client.py", line 1447, in connect
+    super().connect()
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\http\client.py", line 941, in connect
+    self.sock = self._create_connection(
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\socket.py", line 824, in create_connection
+    for res in getaddrinfo(host, port, 0, SOCK_STREAM):
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\socket.py", line 955, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+socket.gaierror: [Errno 11001] getaddrinfo failed
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 138, in grab_HTML
+    webpage = urlopen(req)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 216, in urlopen
+    return opener.open(url, data, timeout)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 519, in open
+    response = self._open(req, data)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 536, in _open
+    result = self._call_chain(self.handle_open, protocol, protocol +
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 496, in _call_chain
+    result = func(*args)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 1391, in https_open
+    return self.do_open(http.client.HTTPSConnection, req,
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 1351, in do_open
+    raise URLError(err)
+urllib.error.URLError: <urlopen error [Errno 11001] getaddrinfo failed>
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 291, in grab_review_data
+    dic = data_attach(dic, row, country)
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 241, in data_attach
+    counts = scrape_count(links, country)
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 182, in scrape_count
+    seek_soup = grab_HTML(seek_url, 1, "Seek")
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 143, in grab_HTML
+    raise Exception(f'Bad URL: {url}') from e
+Exception: Bad URL: https://www.seek.com.au/companies/perth-arena-434158/reviews
+
+
+Row Failed: 863
+Bad URL: https://www.indeed.com/cmp/Iot/reviewsTraceback (most recent call last):
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 1348, in do_open
+    h.request(req.get_method(), req.selector, req.data, headers,
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\http\client.py", line 1282, in request
+    self._send_request(method, url, body, headers, encode_chunked)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\http\client.py", line 1328, in _send_request
+    self.endheaders(body, encode_chunked=encode_chunked)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\http\client.py", line 1277, in endheaders
+    self._send_output(message_body, encode_chunked=encode_chunked)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\http\client.py", line 1037, in _send_output
+    self.send(msg)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\http\client.py", line 975, in send
+    self.connect()
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\http\client.py", line 1447, in connect
+    super().connect()
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\http\client.py", line 941, in connect
+    self.sock = self._create_connection(
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\socket.py", line 824, in create_connection
+    for res in getaddrinfo(host, port, 0, SOCK_STREAM):
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\socket.py", line 955, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+socket.gaierror: [Errno 11001] getaddrinfo failed
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 138, in grab_HTML
+    webpage = urlopen(req)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 216, in urlopen
+    return opener.open(url, data, timeout)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 519, in open
+    response = self._open(req, data)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 536, in _open
+    result = self._call_chain(self.handle_open, protocol, protocol +
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 496, in _call_chain
+    result = func(*args)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 1391, in https_open
+    return self.do_open(http.client.HTTPSConnection, req,
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 1351, in do_open
+    raise URLError(err)
+urllib.error.URLError: <urlopen error [Errno 11001] getaddrinfo failed>
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 291, in grab_review_data
+    dic = data_attach(dic, row, country)
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 241, in data_attach
+    counts = scrape_count(links, country)
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 174, in scrape_count
+    indeed_soup = grab_HTML(indeed_url, 0, "Indeed", country)
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 143, in grab_HTML
+    raise Exception(f'Bad URL: {url}') from e
+Exception: Bad URL: https://www.indeed.com/cmp/Iot/reviews
+
+
+Row Failed: 864
+<urlopen error [Errno 11001] getaddrinfo failed>Traceback (most recent call last):
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 1348, in do_open
+    h.request(req.get_method(), req.selector, req.data, headers,
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\http\client.py", line 1282, in request
+    self._send_request(method, url, body, headers, encode_chunked)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\http\client.py", line 1328, in _send_request
+    self.endheaders(body, encode_chunked=encode_chunked)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\http\client.py", line 1277, in endheaders
+    self._send_output(message_body, encode_chunked=encode_chunked)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\http\client.py", line 1037, in _send_output
+    self.send(msg)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\http\client.py", line 975, in send
+    self.connect()
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\http\client.py", line 1447, in connect
+    super().connect()
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\http\client.py", line 941, in connect
+    self.sock = self._create_connection(
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\socket.py", line 824, in create_connection
+    for res in getaddrinfo(host, port, 0, SOCK_STREAM):
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\socket.py", line 955, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+socket.gaierror: [Errno 11001] getaddrinfo failed
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 291, in grab_review_data
+    dic = data_attach(dic, row, country)
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 230, in data_attach
+    results = google_search(queries)
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 85, in google_search
+    urls = list(search(query, stop=stop_point))
+  File "D:\Projects\Python\135 Code\Git\CompanyList\.venv\lib\site-packages\googlesearch\__init__.py", line 305, in search
+    html = get_page(url, user_agent, verify_ssl)
+  File "D:\Projects\Python\135 Code\Git\CompanyList\.venv\lib\site-packages\googlesearch\__init__.py", line 174, in get_page
+    response = urlopen(request)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 216, in urlopen
+    return opener.open(url, data, timeout)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 519, in open
+    response = self._open(req, data)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 536, in _open
+    result = self._call_chain(self.handle_open, protocol, protocol +
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 496, in _call_chain
+    result = func(*args)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 1391, in https_open
+    return self.do_open(http.client.HTTPSConnection, req,
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 1351, in do_open
+    raise URLError(err)
+urllib.error.URLError: <urlopen error [Errno 11001] getaddrinfo failed>
+
+
+Row Failed: 2102
+
+HTTP Error: 
+500
+ URL: https://au.indeed.com/cmp/Trivett/reviewsTraceback (most recent call last):
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 138, in grab_HTML
+    webpage = urlopen(req)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 216, in urlopen
+    return opener.open(url, data, timeout)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 525, in open
+    response = meth(req, response)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 634, in http_response
+    response = self.parent.error(
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 563, in error
+    return self._call_chain(*args)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 496, in _call_chain
+    result = func(*args)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 643, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 500: 
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 291, in grab_review_data
+    dic = data_attach(dic, row, country)
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 241, in data_attach
+    counts = scrape_count(links, country)
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 174, in scrape_count
+    indeed_soup = grab_HTML(indeed_url, 0, "Indeed", country)
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 141, in grab_HTML
+    raise Exception(f'\nHTTP Error: \n{e.code}\n URL: {url}')
+Exception: 
+HTTP Error: 
+500
+ URL: https://au.indeed.com/cmp/Trivett/reviews
+
+
+Row Failed: 2107
+
+HTTP Error: 
+500
+ URL: https://au.indeed.com/cmp/Rcr-Tomlinson/reviewsTraceback (most recent call last):
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 138, in grab_HTML
+    webpage = urlopen(req)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 216, in urlopen
+    return opener.open(url, data, timeout)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 525, in open
+    response = meth(req, response)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 634, in http_response
+    response = self.parent.error(
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 563, in error
+    return self._call_chain(*args)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 496, in _call_chain
+    result = func(*args)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 643, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 500: 
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 291, in grab_review_data
+    dic = data_attach(dic, row, country)
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 241, in data_attach
+    counts = scrape_count(links, country)
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 174, in scrape_count
+    indeed_soup = grab_HTML(indeed_url, 0, "Indeed", country)
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 141, in grab_HTML
+    raise Exception(f'\nHTTP Error: \n{e.code}\n URL: {url}')
+Exception: 
+HTTP Error: 
+500
+ URL: https://au.indeed.com/cmp/Rcr-Tomlinson/reviews
+
+
+Row Failed: 2109
+
+HTTP Error: 
+500
+ URL: https://au.indeed.com/cmp/Brimbank-City-Council/reviewsTraceback (most recent call last):
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 138, in grab_HTML
+    webpage = urlopen(req)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 216, in urlopen
+    return opener.open(url, data, timeout)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 525, in open
+    response = meth(req, response)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 634, in http_response
+    response = self.parent.error(
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 563, in error
+    return self._call_chain(*args)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 496, in _call_chain
+    result = func(*args)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 643, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 500: 
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 291, in grab_review_data
+    dic = data_attach(dic, row, country)
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 241, in data_attach
+    counts = scrape_count(links, country)
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 174, in scrape_count
+    indeed_soup = grab_HTML(indeed_url, 0, "Indeed", country)
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 141, in grab_HTML
+    raise Exception(f'\nHTTP Error: \n{e.code}\n URL: {url}')
+Exception: 
+HTTP Error: 
+500
+ URL: https://au.indeed.com/cmp/Brimbank-City-Council/reviews
+
+
+Row Failed: 2110
+
+HTTP Error: 
+500
+ URL: https://au.indeed.com/cmp/Cenitex/reviewsTraceback (most recent call last):
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 138, in grab_HTML
+    webpage = urlopen(req)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 216, in urlopen
+    return opener.open(url, data, timeout)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 525, in open
+    response = meth(req, response)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 634, in http_response
+    response = self.parent.error(
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 563, in error
+    return self._call_chain(*args)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 496, in _call_chain
+    result = func(*args)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 643, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 500: 
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 291, in grab_review_data
+    dic = data_attach(dic, row, country)
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 241, in data_attach
+    counts = scrape_count(links, country)
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 174, in scrape_count
+    indeed_soup = grab_HTML(indeed_url, 0, "Indeed", country)
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 141, in grab_HTML
+    raise Exception(f'\nHTTP Error: \n{e.code}\n URL: {url}')
+Exception: 
+HTTP Error: 
+500
+ URL: https://au.indeed.com/cmp/Cenitex/reviews
+
+
+Row Failed: 2111
+
+HTTP Error: 
+500
+ URL: https://au.indeed.com/cmp/Anglicare-Southern-Queensland/reviewsTraceback (most recent call last):
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 138, in grab_HTML
+    webpage = urlopen(req)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 216, in urlopen
+    return opener.open(url, data, timeout)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 525, in open
+    response = meth(req, response)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 634, in http_response
+    response = self.parent.error(
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 563, in error
+    return self._call_chain(*args)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 496, in _call_chain
+    result = func(*args)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 643, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 500: 
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 291, in grab_review_data
+    dic = data_attach(dic, row, country)
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 241, in data_attach
+    counts = scrape_count(links, country)
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 174, in scrape_count
+    indeed_soup = grab_HTML(indeed_url, 0, "Indeed", country)
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 141, in grab_HTML
+    raise Exception(f'\nHTTP Error: \n{e.code}\n URL: {url}')
+Exception: 
+HTTP Error: 
+500
+ URL: https://au.indeed.com/cmp/Anglicare-Southern-Queensland/reviews
+
+
+Row Failed: 2113
+
+HTTP Error: 
+500
+ URL: https://au.indeed.com/cmp/Ma-Security-Group/reviewsTraceback (most recent call last):
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 138, in grab_HTML
+    webpage = urlopen(req)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 216, in urlopen
+    return opener.open(url, data, timeout)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 525, in open
+    response = meth(req, response)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 634, in http_response
+    response = self.parent.error(
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 563, in error
+    return self._call_chain(*args)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 496, in _call_chain
+    result = func(*args)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 643, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 500: 
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 291, in grab_review_data
+    dic = data_attach(dic, row, country)
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 241, in data_attach
+    counts = scrape_count(links, country)
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 174, in scrape_count
+    indeed_soup = grab_HTML(indeed_url, 0, "Indeed", country)
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 141, in grab_HTML
+    raise Exception(f'\nHTTP Error: \n{e.code}\n URL: {url}')
+Exception: 
+HTTP Error: 
+500
+ URL: https://au.indeed.com/cmp/Ma-Security-Group/reviews
+
+
+Row Failed: 2128
+
+HTTP Error: 
+500
+ URL: https://au.indeed.com/cmp/Melbourne-Water/reviewsTraceback (most recent call last):
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 138, in grab_HTML
+    webpage = urlopen(req)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 216, in urlopen
+    return opener.open(url, data, timeout)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 525, in open
+    response = meth(req, response)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 634, in http_response
+    response = self.parent.error(
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 563, in error
+    return self._call_chain(*args)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 496, in _call_chain
+    result = func(*args)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 643, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 500: 
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 291, in grab_review_data
+    dic = data_attach(dic, row, country)
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 241, in data_attach
+    counts = scrape_count(links, country)
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 174, in scrape_count
+    indeed_soup = grab_HTML(indeed_url, 0, "Indeed", country)
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 141, in grab_HTML
+    raise Exception(f'\nHTTP Error: \n{e.code}\n URL: {url}')
+Exception: 
+HTTP Error: 
+500
+ URL: https://au.indeed.com/cmp/Melbourne-Water/reviews
+
+
+Row Failed: 2583
+
+HTTP Error: 
+404
+ URL: https://www.seek.com.au/companies/mercer-432796/reviewsTraceback (most recent call last):
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 138, in grab_HTML
+    webpage = urlopen(req)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 216, in urlopen
+    return opener.open(url, data, timeout)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 525, in open
+    response = meth(req, response)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 634, in http_response
+    response = self.parent.error(
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 563, in error
+    return self._call_chain(*args)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 496, in _call_chain
+    result = func(*args)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 643, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 404: Not Found
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 291, in grab_review_data
+    dic = data_attach(dic, row, country)
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 241, in data_attach
+    counts = scrape_count(links, country)
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 182, in scrape_count
+    seek_soup = grab_HTML(seek_url, 1, "Seek")
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 141, in grab_HTML
+    raise Exception(f'\nHTTP Error: \n{e.code}\n URL: {url}')
+Exception: 
+HTTP Error: 
+404
+ URL: https://www.seek.com.au/companies/mercer-432796/reviews
+
+
+Row Failed: 3603
+
+HTTP Error: 
+404
+ URL: https://www.seek.com.au/companies/raytheon-australia-435142/reviewsTraceback (most recent call last):
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 138, in grab_HTML
+    webpage = urlopen(req)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 216, in urlopen
+    return opener.open(url, data, timeout)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 525, in open
+    response = meth(req, response)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 634, in http_response
+    response = self.parent.error(
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 563, in error
+    return self._call_chain(*args)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 496, in _call_chain
+    result = func(*args)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 643, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 404: Not Found
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 291, in grab_review_data
+    dic = data_attach(dic, row, country)
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 241, in data_attach
+    counts = scrape_count(links, country)
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 182, in scrape_count
+    seek_soup = grab_HTML(seek_url, 1, "Seek")
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 141, in grab_HTML
+    raise Exception(f'\nHTTP Error: \n{e.code}\n URL: {url}')
+Exception: 
+HTTP Error: 
+404
+ URL: https://www.seek.com.au/companies/raytheon-australia-435142/reviews
+
+
+
+
+[582, 601, 616, 734, 762, 852, 863, 864, 2102, 2107, 2109, 2110, 2111, 2113, 2128, 2583, 3603]

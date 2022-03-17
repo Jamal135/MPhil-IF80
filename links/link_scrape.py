@@ -170,12 +170,11 @@ def review_volume(soup, website: str):
 
 def scrape_count(links: list, country: str):
     ''' Returns: Number of reviews at link. '''
-    indeed_url = links[0]
-    if not indeed_url:
-        indeed_count = 0
-    else:
+    if indeed_url := links[0]:
         indeed_soup = grab_HTML(indeed_url, 0, "Indeed", country)
         indeed_count = review_volume(indeed_soup, "Indeed")
+    else:
+        indeed_count = 0
     seek_url = links[1]
     if not seek_url or seek_url == seeks_reviews:
         seek_count = 0
@@ -266,10 +265,9 @@ def error_handling(filename: str, errors: list, dataframe):
     filename = f'{filename[:-4]}_Error_Rows.csv'
     with open(f'links/{filename}', 'w', newline='', encoding='utf-8') as csv_file:
         writer = csv.writer(csv_file, delimiter=',', lineterminator='\n')
-        writer.writerow(['index', 'country', 'founded', 'id', 'industry',
+        writer.writerow(['error', 'index', 'country', 'founded', 'id', 'industry',
                         'linkedin_url', 'locality', 'name', 'region', 'size', 'website'])
-        data.extend([index] + list(dataframe.iloc[index])[1:]
-                    for index in errors)
+        data.extend([index] + list(dataframe.iloc[index]) for index in errors)
         print("Building Error CSV")
         for row in tqdm(data):
             writer.writerow(row)
@@ -310,7 +308,7 @@ def grab_review_data(output_name: str, input_name: str, country: str = "AU", sta
         error_handling(output_name, errors, dataframe)
 
 
-grab_review_data("AUS_5001+_Links", "companies/AUS_5001+_Data")
+#grab_review_data("AUS_501+_Links", "companies/AUS_501+_Data")
 
 
 def manual_error_handling(filename: str, country: str = "AU"):
@@ -326,4 +324,4 @@ def manual_error_handling(filename: str, country: str = "AU"):
     append_CSV(f'links/{filename[:-4]}_Corrected.csv', dic)
 
 
-#manual_error_handling("AUS_1001+_Links")
+manual_error_handling("AUS_501+_Links")

@@ -16,10 +16,9 @@ def build_dataframe(input_name: str):
 def total_review_count(input_name: str):
     ''' Returns: Total number of reviews. '''
     dataframe = build_dataframe(input_name)
-    lines = len(dataframe.index)
     return sum(
         int(row['total_reviews'])
-        for _, row in tqdm(dataframe.iterrows(), total=lines)
+        for _, row in dataframe.iterrows()
     )
 
 def conditional_review_count(input_name: str, threshold: int = 50):
@@ -43,4 +42,4 @@ def calculate_counts(input_name: str):
     print(f'Total with over 50 reviews: {threshold_total}')
 
 
-calculate_counts("")
+calculate_counts("links/AUS_501+_Links.csv")
