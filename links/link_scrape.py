@@ -5,6 +5,7 @@ from urllib.request import Request, urlopen
 from difflib import SequenceMatcher
 from googlesearch import search
 from bs4 import BeautifulSoup
+import dask.dataframe as dd
 from time import sleep
 from tqdm import tqdm
 import traceback
@@ -15,6 +16,11 @@ import sys
 import re
 import os
 
+
+headers = ['index', 'name', 'industry', 'region', 'size', 'founded', 'linkedin_url', 'indeed_url',
+           'indeed_reviews', 'seek_url', 'seek_reviews', 'total_reviews', 'correct', 'scores', 'valid_urls']
+any_size = ['1-10', '11-50', '51-200', '201-500',
+            '501-1000', '1001-5000', '5001-10000', '10001+']
 
 # Seeks own reviews seems to break stuff...
 seeks_reviews = "https://www.seek.com.au/companies/seek-432600/reviews"
@@ -138,7 +144,7 @@ def grab_HTML(url: str, start: int, website: str, country: str = None):
         webpage = urlopen(req)
         return BeautifulSoup(webpage, 'html.parser')
     except HTTPError as e:
-        raise Exception(f'\nHTTP Error: \n{e.code}\n URL: {url}')
+        raise Exception(f'\nHTTP Error: \n{e.code}\n URL: {url}') from e
     except URLError as e:
         raise Exception(f'Bad URL: {url}') from e
 
@@ -243,7 +249,7 @@ def data_attach(dic: dict, row: list, country: str, manual: bool = False):
     return append_data(dic, valid_urls, links, scores, counts)
 
 
-def append_CSV(filename: str, dic: dict):
+def append_CSV(filename: str, dic: dict, manual: bool = False):
     ''' Returns: Built and named CSV file containing data. '''
     file_exists = os.path.isfile(f'links/{filename}')
     with open(f'links/{filename}', 'a', newline='', encoding='utf-8') as csv_file:
@@ -252,7 +258,11 @@ def append_CSV(filename: str, dic: dict):
         if not file_exists:
             writer.writerow(headers)
         length = len(dic['name'])
+        if manual:
+            length -= 1
         for i in range(length):
+            if manual:
+                i += 1
             data = [dic[column][i] for column in headers]
             writer.writerow(data)
 
@@ -308,7 +318,7 @@ def grab_review_data(output_name: str, input_name: str, country: str = "AU", sta
         error_handling(output_name, errors, dataframe)
 
 
-#grab_review_data("AUS_501+_Links", "companies/AUS_501+_Data")
+# grab_review_data("AUS_501+_Links", "companies/AUS_501+_Data")
 
 
 def manual_error_handling(filename: str, country: str = "AU"):
@@ -321,7 +331,23 @@ def manual_error_handling(filename: str, country: str = "AU"):
     dic = dictionary_build()
     for _, row in dataframe.iterrows():
         dic = data_attach(dic, row, country, manual=True)
-    append_CSV(f'links/{filename[:-4]}_Corrected.csv', dic)
+    append_CSV(filename, dic, manual=True)
 
 
-manual_error_handling("AUS_501+_Links")
+# manual_error_handling("AUS_501+_Links")
+
+
+def pull_specific_data(output_name: str, input_name: str, size_list: list):
+    ''' Returns: CSV of organisations of listed size from listed country. '''
+    if not output_name.endswith(".csv"):
+        output_name += ".csv"
+    if not input_name.endswith(".csv"):
+        input_name += ".csv"
+    df = dd.read_csv(f'links/{input_name}', low_memory=False,
+                     on_bad_lines='error', encoding='utf8')
+    df_selected = df[(df['size'].isin(size_list))]
+    df_selected.compute().to_csv(f'links/{output_name}', index=False,
+                                 header=headers)
+
+
+# pull_specific_data("AUS_1001+_Links", "AUS_501+_Links", any_size[5:])
