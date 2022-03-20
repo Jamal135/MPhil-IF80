@@ -249,7 +249,7 @@ def data_attach(dic: dict, row: list, country: str, manual: bool = False):
     return append_data(dic, valid_urls, links, scores, counts)
 
 
-def append_CSV(filename: str, dic: dict, manual: bool = False):
+def append_CSV(filename: str, dic: dict):
     ''' Returns: Built and named CSV file containing data. '''
     file_exists = os.path.isfile(f'links/{filename}')
     with open(f'links/{filename}', 'a', newline='', encoding='utf-8') as csv_file:
@@ -258,11 +258,7 @@ def append_CSV(filename: str, dic: dict, manual: bool = False):
         if not file_exists:
             writer.writerow(headers)
         length = len(dic['name'])
-        if manual:
-            length -= 1
         for i in range(length):
-            if manual:
-                i += 1
             data = [dic[column][i] for column in headers]
             writer.writerow(data)
 
@@ -331,7 +327,7 @@ def manual_error_handling(filename: str, country: str = "AU"):
     dic = dictionary_build()
     for _, row in dataframe.iterrows():
         dic = data_attach(dic, row, country, manual=True)
-    append_CSV(filename, dic, manual=True)
+    append_CSV(filename, dic)
 
 
 # manual_error_handling("AUS_501+_Links")
