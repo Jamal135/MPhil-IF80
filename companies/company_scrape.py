@@ -57,7 +57,7 @@ def build_company_data(output_name: str, country_list: list, size_list: list):
     log_errors(output_name, country_list, size_list)
 
 
-#build_company_data("Focus_Company_List", main_countries, any_size[3:])
+build_company_data("US_Companies_10001+", ['united states'], ['10001+'])
 
 
 def pull_specific_data(output_name: str, input_name: str, country_list: list, size_list: list):
