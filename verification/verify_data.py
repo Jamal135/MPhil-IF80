@@ -7,19 +7,19 @@ pandas.options.mode.chained_assignment = None  # default='warn'
 
 def build_dataframe(input_name: str):
     ''' Returns: Built dataframe structure. '''
-    return pandas.read_csv(input_name, usecols=[
+    return pandas.read_csv(f"verification/{input_name}", usecols=[
         'name', 'industry', 'region', 'size', 'founded',
         'linkedin_url', 'indeed_url', 'indeed_reviews',
         'seek_url', 'seek_reviews', 'total_reviews',
         'correct', 'scores', 'valid_urls'])
 
 
-def show_data(row: list, country: str = "AU"):
+def show_data(row: list):
     scores = ast.literal_eval(row["scores"])
     ''' Displays collected row data for verifying. '''
     print(f'Organisation: {row["name"]}\n\
-        LinkedIn: {row["linkedin_url"]}\n\
-        Indeed: {row["indeed_url"]}?country={country} Scores: {scores[0]}\n\
+        LinkedIn: https://www.{row["linkedin_url"]}\n\
+        Indeed: {row["indeed_url"]} Scores: {scores[0]}\n\
         Seek: {row["seek_url"]} Scores: {scores[1]}')
 
 
@@ -68,7 +68,7 @@ def verify_data(input_name: str):
         for index, row in dataframe.iterrows():
             while True:
                 if row['correct'] != "Unknown":
-                    print(f"Row {index} already corrected\n")
+                    print(f"Row {index} already checked\n")
                     break
                 correct = user_input(row, index)
                 if correct != "n":
@@ -78,7 +78,7 @@ def verify_data(input_name: str):
                 dataframe = fix_previous(dataframe, previous)
     except KeyboardInterrupt:
         print(f'\nStopping at row {index}')
-    dataframe.to_csv(input_name, index=False)
+    dataframe.to_csv(f"verification/{input_name}", index=False)
 
 
-verify_data("AUS_ONLY_1001+_Result")
+verify_data("AUS_501+_Checked")
