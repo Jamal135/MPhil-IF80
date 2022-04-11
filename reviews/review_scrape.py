@@ -48,7 +48,7 @@ def grab_HTML(website, seek_url, start, country=None):
                     headers={'User-Agent': 'Mozilla/5.0'})
             webpage = lib.urlopen(req)
             return BeautifulSoup(webpage, 'html.parser')
-        except:
+        except Exception:
             sleep(5)
             continue
     print("Failed to grab HTML")
@@ -111,7 +111,7 @@ def review_volume(soup, website, reviews_per_page):
             try:
                 number_reviews = int(overview_data.find(
                     'span').find('b').text.replace(',', ''))
-            except:
+            except Exception:
                 number_reviews = int(re.findall(
                     r'\d+', overview_data.find('span').text)[0])
             number_pages = ceil((number_reviews - 1) / reviews_per_page)
@@ -121,7 +121,7 @@ def review_volume(soup, website, reviews_per_page):
                 "ReviewOverviewReviews"))[1].split("JobsTop")[0])
             number_pages = ceil((number_reviews) / reviews_per_page)
         return number_reviews, number_pages
-    except:
+    except Exception:
         print(f"Failed to determine {website} review volume")
         exit(0)
 
@@ -173,12 +173,12 @@ def indeed_footer(soup, jump, dic):
         try:
             dic['pro'].append(procon_data.find(
                 'h2', string='Pros').next_sibling.text)
-        except:
+        except Exception:
             dic['pro'].append("")
         try:
             dic['con'].append(procon_data.find(
                 'h2', string='Cons').next_sibling.text)
-        except:
+        except Exception:
             dic['con'].append("")
     return dic
 
@@ -221,7 +221,7 @@ def seek_position(number_pages, seek_url):
             parent_class = ((str(optional_data.find_parent('div')).split(
                 '<div class="'))[1].split('"')[0])
             break
-        except:
+        except Exception:
             continue
     return optional_data, parent_class
 
@@ -235,7 +235,7 @@ def seek_header(soup, dic, parent_class, optional_data):
             location_data = optional_data.find(
                 'div', attrs={'id': 'work-location'})
             dic['location'].append(location_data.text)
-        except:
+        except Exception:
             dic['location'].append("Unknown")
         status_data = optional_data.text
         if "current" in status_data:

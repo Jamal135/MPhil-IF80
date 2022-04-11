@@ -114,7 +114,7 @@ def validate_search(results: list, name: str, score_threshold: float = 0.4):
         scoring = []
         for i, result in enumerate(list):
             if re.match(regex[index], result):
-                url_name = re.search(part[index], result).group(1)
+                url_name = re.search(part[index], result)[1]
                 match_score = (SequenceMatcher(
                     None, url_name, name).ratio() / 4) * 3
                 place_score = 0.25 - (0.05 * i)
@@ -158,7 +158,7 @@ def review_volume(soup, website: str):
             try:
                 number_reviews = int(overview_data.find(
                     'span').find('b').text.replace(',', ''))
-            except:
+            except Exception:
                 number_reviews = int(re.findall(
                     r'\d+', overview_data.find('span').text)[0])
         except AttributeError:
@@ -168,7 +168,7 @@ def review_volume(soup, website: str):
         try:
             number_reviews = int((overview_data.text.split(
                 "ReviewOverviewReviews"))[1].split("JobsTop")[0])
-        except:
+        except Exception:
             number_reviews = int(
                 re.findall(r'total rating from ([0-9]+)', overview_data.text)[0])
     return number_reviews
