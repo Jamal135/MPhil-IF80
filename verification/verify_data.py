@@ -1,9 +1,12 @@
 # Creation Date: 06/03/2022
 
+# Note row values refer to row number in CSV, not in Dataframe.
+
 import pandas
 import ast
 
 pandas.options.mode.chained_assignment = None  # default='warn'
+
 
 def build_dataframe(input_name: str):
     ''' Returns: Built dataframe structure. '''
@@ -23,62 +26,57 @@ def show_data(row: list):
         Seek: {row["seek_url"]} Scores: {scores[1]}')
 
 
-def user_input(row, index: int, allow_n: bool = True):
+def user_input(row, index: int):
     ''' Returns valid user command line argument. '''
     show_data(row)
-    valid_values = ("0", "1", "n") if allow_n and index != 0 else ("0", "1")
+    valid_values = ("0", "1")
     response = ("Incorrect", "Correct")
-    while True:
-        correct = input("Is data correct: ")
-        if correct not in valid_values:
-            print(f'Input {correct} is not in {valid_values}')
-            continue
-        else:
-            if correct != "n":
-                print(f'Row {index} marked: {response[int(correct)]}\n')
-            break
-    return correct
+    websites = ["Indeed", "Seek"]
+    responses = []
+    for link in range(len(websites)):
+        while True:
+            correct = input(f"Is {websites[link]} correct: ")
+            if correct not in valid_values:
+                print(f'Input {correct} is not in {valid_values}')
+                continue
+            else:
+                print(
+                    f'Row {index + 2}, {websites[link]} marked: {response[int(correct)]}')
+                break
+        responses.append(correct)
+    print('')
+    return responses
 
 
-def fix_current(dataframe, correct: str, index: int):
+def fix_current(dataframe, responses: str, index: int):
     ''' Returns: Dataframe with current value fixed. '''
-    text = "Correct" if bool(int(correct)) else "Incorrect"
-    dataframe['correct'][index] = text
+    data = tuple(["Correct" if x == "1" else "Incorrect" for x in responses])
+    dataframe['correct'][index] = str(data)
     return dataframe
 
 
-def fix_previous(dataframe, previous: list):
-    ''' Returns: Dataframe with previous value fixed. '''
-    print(f"Previous marked wrong, revisiting row {previous[1]}")
-    correct = user_input(previous[0], previous[1], False)
-    text = "Correct" if bool(int(correct)) else "Incorrect"
-    dataframe['correct'][previous[1]] = text
-    print(f"Row {previous[1]} fixed")
-    return dataframe
-
-
-def verify_data(input_name: str):
+def verify_data(input_name: str, start: int = None):
     ''' Returns: Modified CSV with corrected data. '''
-    print("Input 0: incorrect, 1: correct, n: fix previous\n")
+    print("Input 0: incorrect, 1: correct\n")
     if not input_name.endswith(".csv"):
         input_name += ".csv"
     dataframe = build_dataframe(input_name)
-    previous = None
+    if start < 2:
+        raise ValueError("Start argument must be two or larger. ")
     try:
         for index, row in dataframe.iterrows():
             while True:
-                if row['correct'] != "Unknown":
-                    print(f"Row {index} already checked\n")
+                if index == start - 2:
+                    print(f"Row {index + 2} specified start\n")
+                elif row['correct'] != "Unknown":
+                    print(f"Row {index + 2} already checked\n")
                     break
-                correct = user_input(row, index)
-                if correct != "n":
-                    dataframe = fix_current(dataframe, correct, index)
-                    previous = [row, index]
-                    break
-                dataframe = fix_previous(dataframe, previous)
+                responses = user_input(row, index)
+                dataframe = fix_current(dataframe, responses, index)
+                break
     except KeyboardInterrupt:
-        print(f'\nStopping at row {index}')
+        print(f'\nStopping at row {index + 2}')
     dataframe.to_csv(f"verification/{input_name}", index=False)
 
 
-verify_data("AUS_501+_Checked")
+verify_data("AUS_501+_Checked", start=2)

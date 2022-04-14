@@ -31,7 +31,7 @@ def load_data(filename: str, column: str):
     ''' Returns: Loaded data structure of selected CSV column. '''
     df = pandas.read_csv(f"topic/{filename}") 
     df = df.dropna(subset=[column]) # Remove nan values
-    return df.Review.values.tolist()
+    return df[column].values.tolist()
 
 
 def sentence_to_words(sentences):
@@ -136,4 +136,4 @@ def LDA_topic_modelling(filename, column, topic_count: int = 10, iterations: int
 
 
 if __name__ == "__main__":
-    LDA_topic_modelling("test_data", "Review")
+    LDA_topic_modelling("test_data", "Review", bigrams=False, trigrams=False, lemmatize=False, topic_count=20)
