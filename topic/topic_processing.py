@@ -24,31 +24,34 @@ filterwarnings('ignore')
 def first_setup():
     import nltk
     nltk.download('stopwords')
-    os.system("python3 -m spacy download en_core_web_sm")
+    os.system("python -m spacy download en_core_web_sm")
 
 
 def load_data(filename: str, column: str):
     ''' Returns: Loaded data structure of selected CSV column. '''
-    df = pandas.read_csv(f"topic/{filename}") 
-    df = df.dropna(subset=[column]) # Remove nan values
+    df = pandas.read_csv(f"topic/{filename}")
+    df = df.dropna(subset=[column])  # Remove nan values
     return df[column].values.tolist()
 
 
 def sentence_to_words(sentences):
-    for sentence in sentences: # deacc=True removes punctuations
+    for sentence in sentences:  # deacc=True removes punctuations
         yield(gensim.utils.simple_preprocess(str(sentence), deacc=True))
 
 
 def cleaning(data):
     ''' Returns: Data cleaned and tokenized ready for preprocessing. '''
-    data = [re.sub('\s+', ' ', sent) for sent in data] # Remove new lines
-    data = [re.sub("\'", "", sent) for sent in data] # Remove single quotes
-    return list(sentence_to_words(data)) # Split sentences to words
+    data = [re.sub('\s+', ' ', sent) for sent in data]  # Remove new lines
+    data = [re.sub("\'", "", sent) for sent in data]  # Remove single quotes
+    return list(sentence_to_words(data))  # Split sentences to words
 
 
-def remove_stopwords(texts, extra_stopwords: list = []):
+def remove_stopwords(texts, extra_stopwords: list = None):
+    if extra_stopwords is None:
+        extra_stopwords = []
     stop_words = stopwords.words('english')
-    stop_words.extend(['from', 'subject', 're', 'edu', 'use'] + extra_stopwords)
+    stop_words.extend(
+        ['from', 'subject', 're', 'edu', 'use'] + extra_stopwords)
     return [[word for word in simple_preprocess(str(doc)) if word not in stop_words] for doc in texts]
 
 
@@ -72,9 +75,13 @@ def lemmatization(texts, tags):
 
 
 def preprocessing(data, stopwords: bool = True, bigrams: bool = True, trigrams: bool = True, 
-                    lemmatize: bool = True, tags: list = ['NOUN', 'ADJ', 'VERB', 'ADV'],
-                    gram_threshold: int = 100, extra_stopwords: list = []):
+                  lemmatize: bool = True, tags: list = None, gram_threshold: int = 100, 
+                  extra_stopwords: list = None):
     ''' Returns: Data preprocessed as specified ready for LDA analysis. '''
+    if tags is None:
+        tags = ['NOUN', 'ADJ', 'VERB', 'ADV']
+    if extra_stopwords is None:
+        extra_stopwords = []
     bigram = gensim.models.Phrases(data, min_count=5, threshold=gram_threshold)
     bigram_mod = gensim.models.phrases.Phraser(bigram)
     trigram = gensim.models.Phrases(bigram[data], threshold=gram_threshold)
@@ -91,7 +98,8 @@ def preprocessing(data, stopwords: bool = True, bigrams: bool = True, trigrams: 
 
 
 def LDA_model_fit(lda_model, corpus, data, id2word):
-    perplexity = lda_model.log_perplexity(corpus) # Measure model accuracy, lower better
+    # Measure model accuracy, lower better
+    perplexity = lda_model.log_perplexity(corpus)
     coherence_model_lda = CoherenceModel(
         model=lda_model, texts=data, dictionary=id2word, coherence='c_v')
     coherence = coherence_model_lda.get_coherence()
@@ -105,19 +113,18 @@ def visualise(lda_model, corpus, filename):
     pyLDAvis.save_html(vis, f'topic/LDAvis_{filename[:-4]}.html')
 
 
-def LDA_topic_modelling(filename, column, topic_count: int = 10, iterations: int = 10, 
-                        chunks: int = 100, stopwords: bool = True, bigrams: bool = True, 
-                        trigrams: bool = True, lemmatize: bool = True, 
-                        tags: list = ['NOUN', 'ADJ', 'VERB', 'ADV'],
-                        gram_threshold: int = 100, extra_stopwords: list = [],
+def LDA_topic_modelling(filename, column, topic_count: int = 10, iterations: int = 10,
+                        chunks: int = 100, stopwords: bool = True, bigrams: bool = True,
+                        trigrams: bool = True, lemmatize: bool = True, tags: list = None,
+                        gram_threshold: int = 100, extra_stopwords: list = None,
                         visualisations: bool = True):
     ''' Purpose: Develops and visualises LDA topic model of data. '''
     if not filename.endswith('.csv'):
         filename += '.csv'
     data = load_data(filename, column)
     data = cleaning(data)
-    data = preprocessing(data, stopwords, bigrams, trigrams, lemmatize, tags,
-                         gram_threshold, extra_stopwords)
+    data = preprocessing(data, stopwords, bigrams, trigrams, lemmatize, 
+                         tags, gram_threshold, extra_stopwords)
     id2word = gensim.corpora.Dictionary(data) # Create Dictionary
     texts = data # Create Corpus
     corpus = [id2word.doc2bow(text) for text in texts]
@@ -136,4 +143,6 @@ def LDA_topic_modelling(filename, column, topic_count: int = 10, iterations: int
 
 
 if __name__ == "__main__":
-    LDA_topic_modelling("test_data", "Review", bigrams=False, trigrams=False, lemmatize=False, topic_count=20)
+    #first_setup()
+    LDA_topic_modelling("test_data", "Review", bigrams=False,
+                        trigrams=False, lemmatize=False, topic_count=20)

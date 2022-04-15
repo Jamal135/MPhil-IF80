@@ -33,15 +33,13 @@ def user_input(row, index: int):
     response = ("Incorrect", "Correct")
     websites = ["Indeed", "Seek"]
     responses = []
-    for link in range(len(websites)):
+    for website in websites:
         while True:
-            correct = input(f"Is {websites[link]} correct: ")
+            correct = input(f"Is {website} correct: ")
             if correct not in valid_values:
                 print(f'Input {correct} is not in {valid_values}')
-                continue
             else:
-                print(
-                    f'Row {index + 2}, {websites[link]} marked: {response[int(correct)]}')
+                print(f'Row {index + 2}, {website} marked: {response[int(correct)]}')
                 break
         responses.append(correct)
     print('')
@@ -50,7 +48,7 @@ def user_input(row, index: int):
 
 def fix_current(dataframe, responses: str, index: int):
     ''' Returns: Dataframe with current value fixed. '''
-    data = tuple(["Correct" if x == "1" else "Incorrect" for x in responses])
+    data = tuple("Correct" if x == "1" else "Incorrect" for x in responses)
     dataframe['correct'][index] = str(data)
     return dataframe
 
