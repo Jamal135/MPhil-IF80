@@ -24,6 +24,8 @@ any_size = ['1-10', '11-50', '51-200', '201-500',
 
 # Seeks own reviews seems to break stuff...
 seeks_reviews = "https://www.seek.com.au/companies/seek-432600/reviews"
+# Ghost Glassdoor link that breaks stuff...
+glassdoor_reviews = ["https://www.glassdoor.com.au/Reviews/index.htm", "https://www.glassdoor.com.au/Reviews/Glassdoor-Reviews-E100431.htm"]
 
 
 def halt():
@@ -82,7 +84,8 @@ def gen_query(organisation: str):
     ''' Returns: Generated search queries for given name. '''
     indeed = f'{organisation} Indeed employee reviews'
     seek = f'{organisation} Seek employee reviews'
-    return [indeed, seek]
+    glassdoor = f'{organisation} Glassdoor employee reviews'
+    return [indeed, seek, glassdoor]
 
 
 def google_search(queries: list, stop_point: int = 6):
@@ -97,12 +100,17 @@ def google_search(queries: list, stop_point: int = 6):
 
 def clean_urls(results: list, scores: list):
     ''' Returns: Dictionary of potentially correct url links. '''
-    valid_urls = {"indeed": [], "seek": []}
+    valid_urls = {"indeed": [], "seek": [], "glassdoor": []}
     for list in range(2):
         for url in range(len(results[list])):
             if scores[list][url] > 0:
-                valid_urls['indeed' if list == 0 else 'seek'].append(
-                    results[list][url])
+                if list == 0:
+                    argument = "indeed"
+                elif list == 1:
+                    argument = "seek"
+                else:
+                    argument = "glassdoor"
+                valid_urls[argument].append(results[list][url])
     return valid_urls
 
 
@@ -111,8 +119,8 @@ def validate_search(results: list, name: str, score_threshold: float = 0.4):
     valid_result, valid_scores = [], []
     regex = [r'https:\/\/(www|au)\.indeed\.com\/cmp\/(.*)\/reviews$',
              r'https:\/\/www\.seek\.com\.au\/companies\/(.*)\/reviews$',
-             r'https:']
-    part = [r'mp\/(.*?)\/', r'es\/(.*?)\/', r''] # Add glassdoor regex
+             r'https:\/\/www\.glassdoor\.com\.au\/Reviews\/(.*)\.htm']
+    part = [r'mp\/(.*?)\/', r'es\/(.*?)\/', r'ws\/(.*?)(\-R|.htm)']
     for index, list in enumerate(results):
         scoring = []
         for i, result in enumerate(list):
@@ -141,7 +149,9 @@ def grab_HTML(url: str, start: int, website: str, country: str = None):
                 f'{url}?start={start}&fcountry={country}',
                 headers={'User-Agent': 'Mozilla/5.0'})
         elif website == "Glassdoor":
-            req = 1 # Add glassdoor html request
+            req = Request(
+                f'{url}',
+                headers={'User-Agent': 'Mozilla/5.0'})
         elif website == "Seek":
             req = Request(
                 f'{url}?page={start}',
@@ -154,7 +164,7 @@ def grab_HTML(url: str, start: int, website: str, country: str = None):
         raise Exception(f'Bad URL: {url}') from e
 
 
-def review_volume(soup, website: str): # Break into volume function for each, add glassdoor
+def review_volume(soup, website: str, url=None):
     ''' Returns: Detected number reviews on website. '''
     if website == "Indeed":
         overview_data = soup.find(
@@ -176,10 +186,14 @@ def review_volume(soup, website: str): # Break into volume function for each, ad
         except Exception:
             number_reviews = int(
                 re.findall(r'total rating from ([0-9]+)', overview_data.text)[0])
+    elif website == "Glassdoor":
+        overview_data = soup.findAll(
+            'span', attrs={'class': 'num eiHeaderLink'})[1]
+        number_reviews = int(overview_data.text)
     return number_reviews
 
 
-def scrape_count(links: list, country: str): #Unclear, need glassdoor here
+def scrape_count(links: list, country: str):
     ''' Returns: Number of reviews at link. '''
     if indeed_url := links[0]:
         indeed_soup = grab_HTML(indeed_url, 0, "Indeed", country)
@@ -191,8 +205,14 @@ def scrape_count(links: list, country: str): #Unclear, need glassdoor here
         seek_count = 0
     else:
         seek_soup = grab_HTML(seek_url, 1, "Seek")
-        seek_count = review_volume(seek_soup, "Seek")
-    return [indeed_count, seek_count] # glassdoor_count
+        seek_count = review_volume(seek_soup, "Seek", seek_url)
+    glassdoor_url = links[2]
+    if not glassdoor_url or glassdoor_url in glassdoor_reviews:
+        glassdoor_count = 0
+    else:
+        glassdoor_soup = grab_HTML(glassdoor_url, 0, "Glassdoor")
+        glassdoor_count = review_volume(glassdoor_soup, "Glassdoor")
+    return [indeed_count, seek_count, glassdoor_count]
 
 
 def verify_dataframe_data(values):
@@ -226,11 +246,11 @@ def append_data(dic: dict, valid_urls: dict, links: list, scores: list, counts: 
     dic['valid_urls'].append(valid_urls)
     dic['indeed_url'].append(links[0])
     dic['seek_url'].append(links[1])
-    #dic['glassdoor_url'].append(links[2])
+    dic['glassdoor_url'].append(links[2])
     dic['scores'].append(scores)
     dic['indeed_reviews'].append(counts[0])
     dic['seek_reviews'].append(counts[1])
-    #dic[glassdoor_reviews'].append(counts[2])
+    dic['glassdoor_reviews'].append(counts[2])
     dic['total_reviews'].append(sum(counts))
     return dic
 
@@ -244,7 +264,7 @@ def data_attach(dic: dict, row: list, country: str, manual: bool = False):
         links, scores = validate_search(results, name)
         valid_urls = clean_urls(results, scores)
     else:
-        print(f'Organisation: {name}') # Verify glassdoor stuff here
+        print(f'Organisation: {name}')
         print(f'LinkedIn: https://{row["linkedin_url"]}')
         indeed_url = input("Indeed URL: ")
         seek_url = input("Seek URL: ")
@@ -271,7 +291,7 @@ def append_CSV(filename: str, dic: dict):
             writer.writerow(data)
 
 
-def error_handling(filename: str, errors: list, dataframe): # Check here
+def error_handling(filename: str, errors: list, dataframe):
     ''' Returns: Generated csv of all rows which errored. '''
     data = []
     with open(f'links/{filename[:-4]}_Error_Log.txt', 'a') as log:
@@ -322,7 +342,7 @@ def grab_review_data(output_name: str, input_name: str, country: str = "AU", sta
         error_handling(output_name, errors, dataframe)
 
 
-# grab_review_data("AUS_501+_Links", "companies/AUS_501+_Data")
+grab_review_data("AUS_1001+_Links_Testing", "companies/AUS_1001+_Data")
 
 
 def manual_error_handling(filename: str, country: str = "AU"):
