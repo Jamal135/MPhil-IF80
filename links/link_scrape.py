@@ -172,6 +172,18 @@ def grab_HTML(url: str, start: int, website: str, country: str = None):
         raise Exception(f'Bad URL: {url}') from e
 
 
+def start_selenium(url: str):
+    ''' Returns: Started Selenium based browser. '''
+    options = Options()
+    options.add_experimental_option("excludeSwitches", ["enable-logging"])
+    browser = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+    browser.implicitly_wait(5)
+    browser.maximize_window()
+    browser.get(url)
+    sleep(5)
+    return browser
+
+
 def review_volume(soup, website: str, url=None):
     ''' Returns: Detected number reviews on website. '''
     if website == "Indeed":
@@ -196,19 +208,15 @@ def review_volume(soup, website: str, url=None):
                 number_reviews = int(
                     re.findall(r'total rating from ([0-9]+)', overview_data.text)[0])
             except Exception:
-                options = Options()
-                options.add_experimental_option("excludeSwitches", ["enable-logging"])
-                browser = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
-                browser.implicitly_wait(5)
-                browser.get(url)
-                sleep(5)
+                browser = start_selenium(url)
                 reviews_element = browser.find_element(By.CSS_SELECTOR, f"a[href='{url[23:]}']")
                 number_reviews = int(reviews_element.text.split()[0])
                 browser.quit()
     elif website == "Glassdoor":
-        overview_data = soup.findAll(
-            'span', attrs={'class': 'num eiHeaderLink'})[1]
-        number_reviews = int(overview_data.text)
+        browser = start_selenium(url)
+        filter_button = browser.find_element(By.XPATH, "(//div[text()='Filter'])[2]")
+        filter_button.click()
+        sleep(999999)
     return number_reviews
 
 
@@ -230,7 +238,7 @@ def scrape_count(links: list, country: str):
         glassdoor_count = 0
     else:
         glassdoor_soup = grab_HTML(glassdoor_url, 0, "Glassdoor")
-        glassdoor_count = review_volume(glassdoor_soup, "Glassdoor")
+        glassdoor_count = review_volume(glassdoor_soup, "Glassdoor", glassdoor_url)
     return [indeed_count, seek_count, glassdoor_count]
 
 
@@ -361,7 +369,7 @@ def grab_review_data(output_name: str, input_name: str, country: str = "AU", sta
         error_handling(output_name, errors, dataframe)
 
 
-grab_review_data("AUS_1001+_Links_Testing", "companies/AUS_1001+_Data")
+grab_review_data("AUS_1001+_Links_Testing", "companies/AUS_1001+_Data", start=27)
 
 
 def manual_error_handling(filename: str, country: str = "AU"):
