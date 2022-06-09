@@ -1,14 +1,20 @@
 # Creation Date: 10/02/2022
 
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
 from urllib.error import URLError, HTTPError
 from urllib.request import Request, urlopen
+from selenium.webdriver.common.by import By
 from difflib import SequenceMatcher
 from googlesearch import search
+from selenium import webdriver
 from bs4 import BeautifulSoup
 import dask.dataframe as dd
 from time import sleep
 from tqdm import tqdm
 import traceback
+import logging
 import os.path
 import pandas
 import csv
@@ -27,6 +33,8 @@ seeks_reviews = "https://www.seek.com.au/companies/seek-432600/reviews"
 # Ghost Glassdoor link that breaks stuff...
 glassdoor_reviews = ["https://www.glassdoor.com.au/Reviews/index.htm", "https://www.glassdoor.com.au/Reviews/Glassdoor-Reviews-E100431.htm"]
 
+# Disable some logging
+logging.getLogger('WDM').setLevel(logging.NOTSET)
 
 def halt():
     print("\nInterrupted")
@@ -184,8 +192,19 @@ def review_volume(soup, website: str, url=None):
             number_reviews = int((overview_data.text.split(
                 "ReviewOverviewReviews"))[1].split("JobsTop")[0])
         except Exception:
-            number_reviews = int(
-                re.findall(r'total rating from ([0-9]+)', overview_data.text)[0])
+            try:
+                number_reviews = int(
+                    re.findall(r'total rating from ([0-9]+)', overview_data.text)[0])
+            except Exception:
+                options = Options()
+                options.add_experimental_option("excludeSwitches", ["enable-logging"])
+                browser = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+                browser.implicitly_wait(5)
+                browser.get(url)
+                sleep(5)
+                reviews_element = browser.find_element(By.CSS_SELECTOR, f"a[href='{url[23:]}']")
+                number_reviews = int(reviews_element.text.split()[0])
+                browser.quit()
     elif website == "Glassdoor":
         overview_data = soup.findAll(
             'span', attrs={'class': 'num eiHeaderLink'})[1]
