@@ -1,6 +1,8 @@
 # Creation Date: 07/06/2022
 
 import pandas as pd
+pd.set_option("display.max_rows", None)
+
 
 def load_CSV(filename: str, drop_list: list = None, skip: bool = False):
     ''' Returns: CSV loaded to dataframe with select columns dropped. '''
@@ -23,6 +25,7 @@ def length(filename: str, number: int, column: str, drop_list: list = None):
     data = df[column][:number]
     data.to_csv(f"{filename}-{column}-{number}.csv", sep='\t')
 
+
 def number(filename: str, column: str, value: str = None, drop_list: list = None):
     ''' Returns: Data on the number of each or a specific value in column. '''
     df = load_CSV(filename, drop_list, True)
@@ -31,4 +34,14 @@ def number(filename: str, column: str, value: str = None, drop_list: list = None
     else:
         print(df[column].value_counts())
 
-number("companies/PDL_Company_Dataset", "country", "australia")
+
+def data_list(filename: str, column: str, length: int = None):
+    ''' Returns: Printed list of data in specified column to length or all. '''
+    df = load_CSV(filename)
+    data = df[column].to_list()
+    if length != None:
+        print(data[:length])
+    else:
+        print(data)
+
+number("companies/AUS_1001+_Data", "industry")
