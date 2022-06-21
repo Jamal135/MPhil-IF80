@@ -213,10 +213,7 @@ def review_volume(soup, website: str, url=None):
                 number_reviews = int(reviews_element.text.split()[0])
                 browser.quit()
     elif website == "Glassdoor":
-        browser = start_selenium(url)
-        filter_button = browser.find_element(By.XPATH, "(//div[text()='Filter'])[2]")
-        filter_button.click()
-        sleep(999999)
+        number_reviews = 0
     return number_reviews
 
 
@@ -369,7 +366,7 @@ def grab_review_data(output_name: str, input_name: str, country: str = "AU", sta
         error_handling(output_name, errors, dataframe)
 
 
-grab_review_data("AUS_1001+_Links_Testing", "companies/AUS_1001+_Data", start=27)
+grab_review_data("AUS_1001+_Links_Testing", "companies/AUS_1001+_Data")
 
 
 def manual_error_handling(filename: str, country: str = "AU"):

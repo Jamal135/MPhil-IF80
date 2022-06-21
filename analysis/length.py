@@ -2,11 +2,14 @@
 
 import pandas as pd
 
-def load_CSV(filename: str, drop_list: list = None):
+def load_CSV(filename: str, drop_list: list = None, skip: bool = False):
     ''' Returns: CSV loaded to dataframe with select columns dropped. '''
     if drop_list is None:
         drop_list = []
-    dataframe = pd.read_csv(f"{filename}.csv")
+    if skip:
+        dataframe = pd.read_csv(f"{filename}.csv", on_bad_lines="skip")
+    else:
+        dataframe = pd.read_csv(f'{filename}.csv')
     if drop_list is not None:
         dataframe.drop(drop_list, axis=1, inplace=True)
     return dataframe
@@ -20,5 +23,12 @@ def length(filename: str, number: int, column: str, drop_list: list = None):
     data = df[column][:number]
     data.to_csv(f"{filename}-{column}-{number}.csv", sep='\t')
 
+def number(filename: str, column: str, value: str = None, drop_list: list = None):
+    ''' Returns: Data on the number of each or a specific value in column. '''
+    df = load_CSV(filename, drop_list, True)
+    if value != None:
+        print(df[column].value_counts()[value])
+    else:
+        print(df[column].value_counts())
 
-length("analysis/Large-Reviews-Data", 100, "Review")
+number("companies/PDL_Company_Dataset", "country", "australia")
