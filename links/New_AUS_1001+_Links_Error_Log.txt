@@ -1,0 +1,155 @@
+Row Failed: 279
+Bad URL: https://www.indeed.com/cmp/Msx-International/reviewsTraceback (most recent call last):
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 1348, in do_open
+    h.request(req.get_method(), req.selector, req.data, headers,
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\http\client.py", line 1282, in request
+    self._send_request(method, url, body, headers, encode_chunked)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\http\client.py", line 1328, in _send_request
+    self.endheaders(body, encode_chunked=encode_chunked)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\http\client.py", line 1277, in endheaders
+    self._send_output(message_body, encode_chunked=encode_chunked)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\http\client.py", line 1037, in _send_output
+    self.send(msg)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\http\client.py", line 975, in send
+    self.connect()
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\http\client.py", line 1447, in connect
+    super().connect()
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\http\client.py", line 941, in connect
+    self.sock = self._create_connection(
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\socket.py", line 824, in create_connection
+    for res in getaddrinfo(host, port, 0, SOCK_STREAM):
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\socket.py", line 955, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+socket.gaierror: [Errno 11002] getaddrinfo failed
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 167, in grab_HTML
+    webpage = urlopen(req)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 216, in urlopen
+    return opener.open(url, data, timeout)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 519, in open
+    response = self._open(req, data)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 536, in _open
+    result = self._call_chain(self.handle_open, protocol, protocol +
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 496, in _call_chain
+    result = func(*args)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 1391, in https_open
+    return self.do_open(http.client.HTTPSConnection, req,
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 1351, in do_open
+    raise URLError(err)
+urllib.error.URLError: <urlopen error [Errno 11002] getaddrinfo failed>
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 349, in grab_review_data
+    dic = data_attach(dic, row, country)
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 299, in data_attach
+    counts = scrape_count(links, country)
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 223, in scrape_count
+    indeed_soup = grab_HTML(indeed_url, 0, "Indeed", country)
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 172, in grab_HTML
+    raise Exception(f'Bad URL: {url}') from e
+Exception: Bad URL: https://www.indeed.com/cmp/Msx-International/reviews
+
+
+Row Failed: 916
+Bad URL: https://au.indeed.com/cmp/Department-of-the-Premier-and-Cabinet/reviewsTraceback (most recent call last):
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 1348, in do_open
+    h.request(req.get_method(), req.selector, req.data, headers,
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\http\client.py", line 1282, in request
+    self._send_request(method, url, body, headers, encode_chunked)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\http\client.py", line 1328, in _send_request
+    self.endheaders(body, encode_chunked=encode_chunked)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\http\client.py", line 1277, in endheaders
+    self._send_output(message_body, encode_chunked=encode_chunked)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\http\client.py", line 1037, in _send_output
+    self.send(msg)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\http\client.py", line 975, in send
+    self.connect()
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\http\client.py", line 1447, in connect
+    super().connect()
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\http\client.py", line 941, in connect
+    self.sock = self._create_connection(
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\socket.py", line 824, in create_connection
+    for res in getaddrinfo(host, port, 0, SOCK_STREAM):
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\socket.py", line 955, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+socket.gaierror: [Errno 11002] getaddrinfo failed
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 167, in grab_HTML
+    webpage = urlopen(req)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 216, in urlopen
+    return opener.open(url, data, timeout)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 519, in open
+    response = self._open(req, data)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 536, in _open
+    result = self._call_chain(self.handle_open, protocol, protocol +
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 496, in _call_chain
+    result = func(*args)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 1391, in https_open
+    return self.do_open(http.client.HTTPSConnection, req,
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 1351, in do_open
+    raise URLError(err)
+urllib.error.URLError: <urlopen error [Errno 11002] getaddrinfo failed>
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 349, in grab_review_data
+    dic = data_attach(dic, row, country)
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 299, in data_attach
+    counts = scrape_count(links, country)
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 223, in scrape_count
+    indeed_soup = grab_HTML(indeed_url, 0, "Indeed", country)
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 172, in grab_HTML
+    raise Exception(f'Bad URL: {url}') from e
+Exception: Bad URL: https://au.indeed.com/cmp/Department-of-the-Premier-and-Cabinet/reviews
+
+
+Row Failed: 1590
+
+HTTP Error: 
+500
+ URL: https://au.indeed.com/cmp/Pizza-Hut/reviewsTraceback (most recent call last):
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 167, in grab_HTML
+    webpage = urlopen(req)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 216, in urlopen
+    return opener.open(url, data, timeout)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 525, in open
+    response = meth(req, response)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 634, in http_response
+    response = self.parent.error(
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 563, in error
+    return self._call_chain(*args)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 496, in _call_chain
+    result = func(*args)
+  File "C:\Users\Jordan Amalfitano\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 643, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 500: Internal Server Error
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 349, in grab_review_data
+    dic = data_attach(dic, row, country)
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 299, in data_attach
+    counts = scrape_count(links, country)
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 223, in scrape_count
+    indeed_soup = grab_HTML(indeed_url, 0, "Indeed", country)
+  File "d:\Projects\Python\135 Code\Git\CompanyList\links\link_scrape.py", line 170, in grab_HTML
+    raise Exception(f'\nHTTP Error: \n{e.code}\n URL: {url}') from e
+Exception: 
+HTTP Error: 
+500
+ URL: https://au.indeed.com/cmp/Pizza-Hut/reviews
+
+
+
+
+[279, 916, 1590]

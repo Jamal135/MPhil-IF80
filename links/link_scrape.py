@@ -366,7 +366,7 @@ def grab_review_data(output_name: str, input_name: str, country: str = "AU", sta
         error_handling(output_name, errors, dataframe)
 
 
-grab_review_data("New_AUS_1001+_Links", "companies/AUS_1001+_Data")
+#grab_review_data("New_AUS_1001+_Links", "companies/AUS_1001+_Data")
 
 
 def manual_error_handling(filename: str, country: str = "AU"):
@@ -382,7 +382,7 @@ def manual_error_handling(filename: str, country: str = "AU"):
     append_CSV(filename, dic)
 
 
-# manual_error_handling("AUS_501+_Links")
+manual_error_handling("New_AUS_1001+_Links")
 
 
 def pull_specific_data(output_name: str, input_name: str, size_list: list):
