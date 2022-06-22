@@ -186,7 +186,9 @@ def start_selenium(url: str):
 
 def review_volume(soup, website: str, url=None):
     ''' Returns: Detected number reviews on website. '''
-    if website == "Indeed":
+    if website == "Glassdoor":
+        number_reviews = 0
+    elif website == "Indeed":
         overview_data = soup.find(
             'div', attrs={'data-testid': 'review-count'})
         try:
@@ -212,8 +214,6 @@ def review_volume(soup, website: str, url=None):
                 reviews_element = browser.find_element(By.CSS_SELECTOR, f"a[href='{url[23:]}']")
                 number_reviews = int(reviews_element.text.split()[0])
                 browser.quit()
-    elif website == "Glassdoor":
-        number_reviews = 0
     return number_reviews
 
 
@@ -366,7 +366,7 @@ def grab_review_data(output_name: str, input_name: str, country: str = "AU", sta
         error_handling(output_name, errors, dataframe)
 
 
-grab_review_data("AUS_1001+_Links_Testing", "companies/AUS_1001+_Data")
+grab_review_data("New_AUS_1001+_Links", "companies/AUS_1001+_Data")
 
 
 def manual_error_handling(filename: str, country: str = "AU"):
