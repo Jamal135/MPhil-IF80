@@ -101,7 +101,7 @@ def google_search(queries: list, stop_point: int = 6):
     results = []
     for query in queries:
         sleep(0.5)
-        urls = list(search(query, stop=stop_point))
+        urls = list(search(query, num_results=stop_point))
         results.append(urls)
     return results
 
