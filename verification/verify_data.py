@@ -13,7 +13,8 @@ def build_dataframe(input_name: str):
     return pandas.read_csv(f"verification/{input_name}", usecols=[
         'name', 'industry', 'region', 'size', 'founded',
         'linkedin_url', 'indeed_url', 'indeed_reviews',
-        'seek_url', 'seek_reviews', 'total_reviews',
+        'seek_url', 'seek_reviews', 'glassdoor_url',
+        'glassdoor_reviews', 'total_reviews',
         'correct', 'scores', 'valid_urls'])
 
 
