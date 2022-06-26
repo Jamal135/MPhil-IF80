@@ -22,23 +22,25 @@ def load_CSV(filename: str, drop_list: list = None):
     return dataframe
 
 
-def start_browser():
+def start_browser(browser_name: str):
     ''' Returns: Selenium browser session. '''
-    browser = webdriver.Chrome(ChromeDriverManager().install())
-    browser.implicitly_wait(5)
-    return browser
+    browser_name = webdriver.Chrome(ChromeDriverManager().install())
+    browser_name.implicitly_wait(5)
+    return browser_name
 
 
 def build_locations(df):
     ''' Purpose: Store index locations for variables. '''
     columns = list(df.columns.values)
-    return {name: columns.index(name) for name in columns}
+    return {name: columns.index(name) + 1 for name in columns}
 
 
-def update_windows(browser, links: list):
+def update_windows(linkedin, website, links: list):
     ''' Purpose: Update Selenium session with list of new windows. '''
     print(links[0])
-    browser.get(links[0]) # Open LinkedIn
+    print(links)
+    linkedin.get(f"https://www.{links[0]}") # Open LinkedIn
+    website.get(links[1]) # Open Selected Website
     sleep(50)
 
 
@@ -48,14 +50,19 @@ def verify_data(filename: str, website: str):
     column = f'{website}_bool'
     if column not in df:
         df[column] = np.nan
-    browser = start_browser()
+    print(df)
+    linkedin = start_browser("linkedin")
+    reviews = start_browser("website")
     indexs = build_locations(df)
+    print(indexs)
     try:
         for row in df.itertuples():
-            if row[indexs[column]] != np.nan:
-                continue
-            links = row[indexs['linkedin_url']], row[indexs[f'{website}_url']]
-            update_windows(browser, links)
+            #if row[indexs[column]] != None:
+                #continue
+            links = [row[indexs['linkedin_url']], row[indexs[f'{website}_url']]]
+            # may have no reviews
+            print(links)
+            update_windows(linkedin, reviews, links)
     except KeyboardInterrupt:
         pass
     #save
