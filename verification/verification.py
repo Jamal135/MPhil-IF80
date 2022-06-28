@@ -1,13 +1,16 @@
 # Creation Date: 23/06/2022
 
 
+import os
+import sys
+import keyboard
 import numpy as np
 import pandas as pd
 from time import sleep
+from dotenv import load_dotenv
 from selenium import webdriver
-from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
-from selenium.webdriver.support import expected_conditions as EC
 
 
 def load_CSV(filename: str, drop_list: list = None):
@@ -20,6 +23,33 @@ def load_CSV(filename: str, drop_list: list = None):
     if drop_list is not None:
         dataframe.drop(drop_list, axis=1, inplace=True)
     return dataframe
+
+
+def get_secrets():
+    ''' Returns: Username and password loaded from ENV. '''
+    load_dotenv()
+    return os.getenv("USER"), os.getenv("PASS")
+
+
+def linkedin_login(linkedin, auto_login: bool):
+    ''' Purpose: Ensure Linkedin is logged in. '''
+    login_point = "https://www.linkedin.com/checkpoint/lg/sign-in-another-account"
+    linkedin.get(login_point)
+    if auto_login:
+        username, password = get_secrets()
+        username_input = linkedin.find_element(
+            By.CSS_SELECTOR, "input[id='username']")
+        username_input.clear()
+        username_input.send_keys(username)
+        password_input = linkedin.find_element(
+            By.CSS_SELECTOR, "input[id='password']")
+        password_input.send_keys(password)
+        login_button = linkedin.find_element(
+            By.XPATH, "//button[@type='submit']")
+        login_button.click()
+    else:
+        input("Press Enter once logged in...")
+    sleep(5)
 
 
 def start_browser(browser_name: str):
@@ -35,34 +65,57 @@ def build_locations(df):
     return {name: columns.index(name) + 1 for name in columns}
 
 
-def update_windows(linkedin, website, links: list):
-    ''' Purpose: Update Selenium session with list of new windows. '''
-    print(links[0])
-    print(links)
-    linkedin.get(f"https://www.{links[0]}") # Open LinkedIn
-    website.get(links[1]) # Open Selected Website
-    sleep(50)
+def start_session(df):
+    ''' Purpose: Bloat code for starting session. '''
+    linkedin = start_browser("linkedin")
+    reviews = start_browser("website")
+    indexs = build_locations(df)
+    return [linkedin, reviews], indexs
 
 
-def verify_data(filename: str, website: str):
+def update_windows(browsers: list, urls: list):
+    ''' Purpose: Update Selenium sessions with new pages. '''
+    for index, browser in enumerate(browsers):
+        browser.get(urls[index])
+    sleep(5)
+
+
+def user_input(index, website):
+    ''' Purpose: Collect user input. '''
+    while True:
+        if keyboard.read_key() == "a":
+            print(f"Marked row {index}, {website} false...")
+            answer = 0
+            break
+        if keyboard.read_key() == "d":
+            print(f"Marked row {index}, {website} correct...")
+            answer = 1
+            break
+    return answer
+       
+
+def verify_data(filename: str, website: str, auto_login: bool = True):
     ''' Purpose: Facilitates verification of links and stores status. '''
     df = load_CSV(filename)
     column = f'{website}_bool'
     if column not in df:
-        df[column] = np.nan
-    print(df)
-    linkedin = start_browser("linkedin")
-    reviews = start_browser("website")
-    indexs = build_locations(df)
-    print(indexs)
+        df[column] = 0
+    browsers, indexs = start_session(df)
+    linkedin_login(browsers[0], auto_login)
+    print("Press 'a' for correct and 'd' for incorrect.")
     try:
         for row in df.itertuples():
-            #if row[indexs[column]] != None:
-                #continue
-            links = [row[indexs['linkedin_url']], row[indexs[f'{website}_url']]]
-            # may have no reviews
-            print(links)
-            update_windows(linkedin, reviews, links)
+            if row[indexs[column]] == 1:
+                continue
+            reviews_url =  row[indexs[f'{website}_url']]
+            if reviews_url is None:
+                row[indexs[column]] == 1
+                continue
+            linkedin_url = f"https://www.{row[indexs['linkedin_url']]}" 
+            update_windows(browsers, [linkedin_url, reviews_url])
+            user_answer = user_input(row.Index, website)
+            df.at[row.Index, column] = user_answer
+            print(df[row.Index, column])
     except KeyboardInterrupt:
         pass
     #save
