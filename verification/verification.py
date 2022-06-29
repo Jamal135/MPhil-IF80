@@ -8,6 +8,7 @@ from time import sleep
 from dotenv import load_dotenv
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
 
 
@@ -54,7 +55,7 @@ def isNaN(num):
 
 def start_browser(browser_name: str):
     ''' Returns: Selenium browser session. '''
-    options = webdriver.ChromeOptions()
+    options = Options()
     options.add_experimental_option("excludeSwitches", ["enable-logging"])
     browser_name = webdriver.Chrome(ChromeDriverManager().install(),
                                     chrome_options=options)
